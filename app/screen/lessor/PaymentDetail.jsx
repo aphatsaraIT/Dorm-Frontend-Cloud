@@ -21,6 +21,7 @@ import DialogInput from "react-native-dialog-input";
 const PaymentDatail = ({ route, navigation }) => {
   const {
     id,
+    payment_id,
     amount,
     uri,
     payment_date,
@@ -33,9 +34,6 @@ const PaymentDatail = ({ route, navigation }) => {
   const [payment, setPayment] = useState(null);
   const [roomNum, setRoomNum] = useState("");
   const [payment_status, setPayment_status] = useState("checking_payment");
-  const [url, setUrl] = useState(
-    `${baseUrl}/getPaymentStatus/${payment_status}`
-  );
   const [invoice, setInvoice] = useState(null);
   const [statusApproved, setStatusApproved] = useState("APPROVED_BILL");
   const [statusCancle, setStatusCancle] = useState("WRONG_BILL");
@@ -60,13 +58,13 @@ const PaymentDatail = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    const url = `${baseUrl}/getInvoiceById/${idInvoice}`;
+    const url = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoicebyid/${idInvoice}`;
     const fetchUsers = async () => {
       try {
         const response = await axios.get(url);
         if (response.status === 200) {
-          setInvoice(response.data);
-          console.log(response.data);
+          setInvoice(response.data.data);
+          // console.log(response.data);
           return;
         } else {
           throw new Error("Failed to fetch invoice pay");
@@ -88,11 +86,11 @@ const PaymentDatail = ({ route, navigation }) => {
             text: "OK",
             onPress: async (event) => {
               const response = await axios.put(
-                `${baseUrl}/updateStatusInvoice/${idInvoice}/${statusApproved}`
+                `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/updatestatus-invoice/${idInvoice}/${statusApproved}`
               );
 
-              const update = await axios.post(`${baseUrl}/updatePayment`, {
-                _id: id,
+              const update = await axios.post(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/updatepayment`, {
+                payment_id : payment_id,
                 amount: amount,
                 payment_date: payment_date,
                 payment_time: payment_time,
@@ -125,7 +123,7 @@ const PaymentDatail = ({ route, navigation }) => {
 
   const canclePayment = async (event) => {
     setVisible(true);
-    console.log(visible);
+    // console.log(visible);
   };
 
   const sendCancle = async (event) => {
@@ -134,8 +132,8 @@ const PaymentDatail = ({ route, navigation }) => {
       //   `${baseUrl}/updateStatusInvoice/${idInvoice}/${statusCancle}`
       // );
       const response = await axios.put(
-        `${baseUrl}/updateInvoice`, {
-        _id: invoice._id,
+        `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/updateinvoice`, {
+        invoice_id: invoice.invoice_id,
         month: invoice.month,
         year: invoice.year,
         room_number: invoice.room_number,
@@ -153,8 +151,8 @@ const PaymentDatail = ({ route, navigation }) => {
       }
       );
 
-      const update = await axios.post(`${baseUrl}/updatePayment`, {
-        _id: id,
+      const update = await axios.post(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/updatepayment`, {
+        payment_id : payment_id,
         amount: amount,
         payment_date: payment_date,
         payment_time: payment_time,
@@ -187,7 +185,7 @@ const PaymentDatail = ({ route, navigation }) => {
             text: "OK",
             onPress: async (event) => {
               const response = await axios.put(
-                `${baseUrl}/updateStatusInvoice/${idInvoice}/${statusApproved}`
+                `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/updatestatus-invoice/${idInvoice}/${statusApproved}`
               );
 
               if (response.status === 200) {

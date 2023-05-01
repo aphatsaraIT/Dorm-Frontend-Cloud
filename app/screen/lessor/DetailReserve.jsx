@@ -19,11 +19,22 @@ function User({ roomNumber, userObject, navigation }) {
   const [cancleStatus, setCancleStatus] = useState("cancle");
   const  onCancleFormHandler = async (event) => {
     try {
-      const cancle = await axios.put(`${baseUrl}/updateStatusReserve/${userObject._id}/${cancleStatus}`);
+      const cancle = await axios
+      .post(`https://gv8j0rpv57.execute-api.us-east-1.amazonaws.com/dev/reserve/updatereserve`, {
+        reserve_id: userObject.reserve_id,
+        room_number: userObject.room_number,
+        first_name: userObject.first_name,
+        last_name:userObject.last_name,
+        mobile: userObject.mobile,
+        reserve_date: userObject.reserve_date,
+        lease_date: userObject.lease_date,
+        status: cancleStatus
+      })
+      
         // console.log(cancleReserve);
         // console.log(status);
         // console.log(userObject._id);
-        const update =await axios.put(`${baseUrl}/updateStatus/${roomNumber}/${status}`);
+        const update =await axios.put(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/updaterent-bystatus/${roomNumber}/${status}`); //rent
         //console.log(reserve_date.toISOString().slice(0, 9));
 
       if (update.status === 200 && cancle.status === 200) {
@@ -117,7 +128,7 @@ function User({ roomNumber, userObject, navigation }) {
           style={styles.btnContract}
           onPress={() => {
             navigation.navigate("LeaseContract", {
-              categoryId: userObject._id,
+              categoryId: userObject.reserve_id,
               categoryTitle: userObject.room_number,
               reserveFname: userObject.first_name,
               reserveLname: userObject.last_name,
@@ -159,14 +170,14 @@ const DetailReserve = ({ route, navigation }) => {
   const [reserve, setReserve] = useState(null);
 
   useEffect(() => {
-    const url = `${baseUrl}/getReserveNum/${categoryTitle}`;
+    const url = `https://gv8j0rpv57.execute-api.us-east-1.amazonaws.com/dev/reserve/getreservebynum/${categoryTitle}`;
     console.log("DetailReserve");
     console.log(url);
     const fetchUsers = async () => {
       try {
         const response = await axios.get(url);
         if (response.status === 200) {
-          setReserve(response.data[0]);
+          setReserve(response.data.data[0]);
           return;
         } else {
           throw new Error("Failed to fetch users");

@@ -27,16 +27,17 @@ const LeaseContract = ({ route, navigation }) => {
   const [rentStatus, setRentStatus] = useState("rent");
 
   useEffect(() => {
-    const url = `${baseUrl}/getRoomNum/${categoryTitle}`;
+    const url = `https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/getroom-bynum/${categoryTitle}`;
 
     const fetchUsers = async () => {
       try {
         const response = await axios.get(url);
         if (response.status === 200) {
-          setRoom(response.data);
-          setRoom_price(response.data.room_price);
-          setRoom_type(response.data.room_type);
-          setRoom_number(response.data.room_number);
+          setRoom(response.data.data);
+          setRoom_price(response.data.data.room_price);
+          setRoom_type(response.data.data.room_type);
+          setRoom_number(response.data.data.room_number);
+          console.log('rent_id : '+categoryId+" "+ rentStatus)
           // console.log(response.data.room_price);
           
           return;
@@ -66,7 +67,7 @@ const LeaseContract = ({ route, navigation }) => {
 
   const onContractFormHandler = async (event) => {
     try {
-      const response = await axios.post(`${baseUrl}/addContract`, {
+      const response = await axios.post(`https://tvybcy5mwe.execute-api.us-east-1.amazonaws.com/dev/addcontract`, {
         first_name,
         last_name,
         address,
@@ -81,17 +82,18 @@ const LeaseContract = ({ route, navigation }) => {
       });
 
       const update = await axios.put(
-        `${baseUrl}/updateStatus/${categoryTitle}/${statusUpdate}`
+        `https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/updaterent-bystatus/${categoryTitle}/${statusUpdate}`
       );
-
-      const cancle = await axios.put(`${baseUrl}/updateStatusReserve/${categoryId}/${rentStatus}`);
+      
+        
+      const cancle = await axios.put(`https://gv8j0rpv57.execute-api.us-east-1.amazonaws.com/dev/reserve/updatereservebyid/${categoryId}/${rentStatus}`);
       
       if (update.status === 200 && response.status === 200 && cancle.status === 200) {
         alert("ทำสัญญาสำเร็จ");
 
         navigation.dispatch(
           StackActions.replace("Register", {
-            categoryId: response.data._id,
+            categoryId: response.data.data.contract_id,
             categoryTitle: room_number,
             first_name: first_name,
             last_name: last_name,
@@ -104,6 +106,7 @@ const LeaseContract = ({ route, navigation }) => {
       }
     } catch (error) {
       alert(error);
+      console.log(error)
     }
   };
 

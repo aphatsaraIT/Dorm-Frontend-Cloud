@@ -379,7 +379,7 @@ const TableInvoice = (props) => {
             style={styles.btnLoad}
             onPress={() =>
               props.navigation.navigate("Payment", {
-                id: props.invoice._id,
+                id: props.invoice.invoice_id,
                 total: props.invoice.total,
                 categoryTitle:  props.invoice.room_number, month: props.invoice.month, year: props.invoice.year
               })

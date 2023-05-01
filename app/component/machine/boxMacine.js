@@ -3,6 +3,7 @@ import { Image, Alert } from "react-native";
 import { Card, Text } from "@ui-kitten/components";
 import { StyleSheet, View } from "react-native";
 import { baseUrl } from "@env";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 
 const BoxMachine = ({ item, width, user }) => {
@@ -75,8 +76,8 @@ const BoxMachine = ({ item, width, user }) => {
       }
 
       setCountdownTime((diffHours * 60 * 60) + (diffMin * 60));
-      console.log("time " + (diffHours) + " " + (diffMin));
-      console.log("end---------");
+      // console.log("time " + (diffHours) + " " + (diffMin));
+      // console.log("end---------");
     };
 
     if (status == "กำลังใช้งาน") {
@@ -97,10 +98,9 @@ const BoxMachine = ({ item, width, user }) => {
       }else if (countdownTime == 0) {
         setCountdownTime(0);
         console.log("end wait");
-        setStatus("ว่าง");
         axios
-          .post(`${baseUrl}/updateMachine`, {
-            _id: item.item._id,
+          .post(`https://hryk0ifyjb.execute-api.us-east-1.amazonaws.com/dev/machine/updatemachine`, {
+            machine_id: item.item.machine_id,
             name: name,
             status: "รอนำผ้าออก",
             time: "00:00",
@@ -111,7 +111,7 @@ const BoxMachine = ({ item, width, user }) => {
             setTime("00:00");
             setWaitTime(1* 60);
             setStatus("รอนำผ้าออก");
-            console.log("update status success");
+            // console.log("update status success");
           })
           .catch((error) => console.log("error updateStatus"));
       }
@@ -130,14 +130,14 @@ const BoxMachine = ({ item, width, user }) => {
         if (waitTime !== null && waitTime > 0) {
       intervalId2 = setInterval(() => {
           setWaitTime((prevTime) => prevTime - 1);
-        }, 1000);
+        }, 100);
       }else if (waitTime == 0 && countdownTime == 0) {
         setWaitTime(0);
         console.log("end ready");
         setStatus("ว่าง");
         axios
-          .post(`${baseUrl}/updateMachine`, {
-            _id: item.item._id,
+          .post(`https://hryk0ifyjb.execute-api.us-east-1.amazonaws.com/dev/machine/updatemachine`, {
+            machine_id: item.item.machine_id,
             name: name,
             status: "ว่าง",
             time: "00:00",
@@ -147,7 +147,7 @@ const BoxMachine = ({ item, width, user }) => {
           .then((response) => {
             setTime("00:00");
             setStatus("ว่าง");
-            console.log("update status success");
+            // console.log("update status success");
           })
           .catch((error) => console.log("error updateStatus"));
       }
@@ -169,7 +169,6 @@ const BoxMachine = ({ item, width, user }) => {
   const minutes2 = Math.floor(waitTime / 60);
   const seconds2 = waitTime % 60;
 
-
   return (
     <View style={[styles.shadow]}>
       <Card
@@ -177,11 +176,11 @@ const BoxMachine = ({ item, width, user }) => {
         style={[
           styles.card,
           { width },
-          item.item.status == "รอนำผ้าออก"
+          status == "รอนำผ้าออก"
             ? { backgroundColor: "#FFE790" }
-            : item.item.status == "กำลังใช้งาน"
+            : status == "กำลังใช้งาน"
             ? { backgroundColor: "#f25a79" }
-            : item.item.status == "เครื่องชำรุด"
+            : status == "เครื่องชำรุด"
             ? { backgroundColor: "#EDE5E6" }
             : { backgroundColor: "#7dd4ad" },
         ]}

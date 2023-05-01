@@ -7,9 +7,10 @@ import {
   OverflowMenu,
   Text,
   Input,
-  Icon, TextInput
+  Icon,
+  TextInput,
 } from "@ui-kitten/components";
-import { TouchableOpacity, StyleSheet, View, Alert} from "react-native";
+import { TouchableOpacity, StyleSheet, View, Alert } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { baseUrl } from "@env";
 import axios from "axios";
@@ -22,26 +23,48 @@ const BoxParcel = ({ item, width }) => {
   const [room_number, setRoom_number] = useState(item.item.room_number);
   const [sent_date, setSent_date] = useState(item.item.sent_date);
   const [receive_date, setReceive_date] = useState(item.item.receive_date);
-  const [transport_name, setTransport_name] = useState(item.item.transport_name);
+  const [transport_name, setTransport_name] = useState(
+    item.item.transport_name
+  );
   const [status, setStatus] = useState(item.item.status);
 
   const Edited = async (event) => {
     try {
-      const response = await axios.post(`${baseUrl}/updateParcel`, {
-        _id : item.item._id,
-        name: name,
-        room_number: room_number.toUpperCase(),
-        sent_date : sent_date,
-        receive_date : receive_date,
-        transport_name : transport_name,
-        status : status
-      });
+      Alert.alert(
+        "ยืนยันที่จะแก้ไข",
+        "",
+        [
+          {
+            text: "OK",
+            onPress: async (event) => {
+              const response = await axios.put(
+                `https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/updateparcel`,
+                {
+                  parcel_id: item.item.parcel_id,
+                  name: name,
+                  room_number: room_number.toUpperCase(),
+                  sent_date: sent_date,
+                  receive_date: receive_date,
+                  transport_name: transport_name,
+                  status: status,
+                }
+              );
 
-      if (response.status === 200) {
-        alert("แก้ไขรายการพัสดุสำเร็จ");
-      } else {
-        throw new Error("An error updateParcel");
-      }
+              if (response.status === 200) {
+                alert("แก้ไขรายการพัสดุสำเร็จ");
+              } else {
+                throw new Error("An error updateParcel");
+              }
+            },
+          },
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
     } catch (error) {
       alert(error);
     }
@@ -58,7 +81,7 @@ const BoxParcel = ({ item, width }) => {
     ></Icon>
   );
 
-  const  deleteHandler = async (event) => {
+  const deleteHandler = async (event) => {
     try {
       Alert.alert(
         "ยืนยันที่จะลบรายการพัสดุ",
@@ -67,21 +90,29 @@ const BoxParcel = ({ item, width }) => {
           {
             text: "OK",
             onPress: async (event) => {
-              const response = await axios.post(`${baseUrl}/deleteParcel`, {
-                _id : item.item._id,
-                name: name,
-                room_number: room_number.toUpperCase(),
-                sent_date : sent_date,
-                receive_date : receive_date,
-                transport_name : transport_name,
-                status : status
-              });
-
-              if (response.status === 200) {
-                alert("ลบรายการพัสดุสำเร็จ");
-              } else {
-                throw new Error("An error deleteParcel");
-              }
+              console.log(
+                name +
+                  " " +
+                  room_number +
+                  " " +
+                  sent_date +
+                  " " +
+                  receive_date +
+                  " " +
+                  transport_name +
+                  " " +
+                  status +
+                  " " +
+                  item.item.parcel_id
+              );
+              axios
+                .delete(
+                  `https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/deleteparcel-byid/${item.item.parcel_id}`
+                )
+                .then((response) => {
+                  alert("ลบรายการพัสดุสำเร็จ");
+                })
+                .catch((error) => console.log(error));
             },
           },
           {
@@ -99,7 +130,15 @@ const BoxParcel = ({ item, width }) => {
 
   return (
     <View style={[styles.shadow]}>
-      <Card style={[styles.card, { width }, item.item.status == 'not_received' ? {backgroundColor: "rgba(195, 220, 227, 0.4)"} : {    borderColor: "#abc7cf", borderWidth: 2}]}>
+      <Card
+        style={[
+          styles.card,
+          { width },
+          item.item.status == "not_received"
+            ? { backgroundColor: "rgba(195, 220, 227, 0.4)" }
+            : { borderColor: "#abc7cf", borderWidth: 2 },
+        ]}
+      >
         <View
           style={{
             top: -5,
@@ -138,29 +177,38 @@ const BoxParcel = ({ item, width }) => {
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.txt}>บริษัขนส่ง : </Text>
-              <Text style={[styles.txt, { color: "black" }]}> {transport_name} </Text>
+              <Text style={[styles.txt, { color: "black" }]}>
+                {" "}
+                {transport_name}{" "}
+              </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.txt}>สถานะ : </Text>
-              <Text style={[styles.txt, { color: "black" }]}>
-                {" "}
-                {status}
-              </Text>
+              <Text style={[styles.txt, { color: "black" }]}> {status}</Text>
             </View>
           </View>
 
           <View style={{ width: "50%", height: "100%" }}>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.txt}>เลขห้อง : </Text>
-              <Text style={[styles.txt, { color: "black" }]}> {room_number} </Text>
+              <Text style={[styles.txt, { color: "black" }]}>
+                {" "}
+                {room_number}{" "}
+              </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.txt}>วันที่มาถึง : </Text>
-              <Text style={[styles.txt, { color: "black" }]}> {sent_date} </Text>
+              <Text style={[styles.txt, { color: "black" }]}>
+                {" "}
+                {sent_date}{" "}
+              </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.txt}>วันที่มารับ : </Text>
-              <Text style={[styles.txt, { color: "black" }]}> {receive_date} </Text>
+              <Text style={[styles.txt, { color: "black" }]}>
+                {" "}
+                {receive_date}{" "}
+              </Text>
             </View>
           </View>
         </View>
@@ -171,31 +219,43 @@ const BoxParcel = ({ item, width }) => {
         backdropStyle={styles.backdrop}
         onBackdropPress={() => setVisible(false)}
       >
-        <Card disabled={true} style={{ width: 350, borderRadius: "50%", padding: 20}}>
+        <Card
+          disabled={true}
+          style={{ width: 350, borderRadius: "50%", padding: 20 }}
+        >
           <Text style={styles.textLabel}>ชื่อผู้รับ </Text>
           <Input
-            style={{ marginBottom: 10, borderRadius: "50%"}}
-            textStyle={{ fontSize: 12, fontWeight: "bold"}}
+            style={{ marginBottom: 10, borderRadius: "50%" }}
+            textStyle={{ fontSize: 12, fontWeight: "bold" }}
             value={name}
             onChangeText={setName}
           />
           <Text style={styles.textLabel}>เลขห้อง </Text>
           <Input
-            style={{borderRadius: "50%", marginBottom: 10,}}
+            style={{ borderRadius: "50%", marginBottom: 10 }}
             textStyle={{ fontSize: 12, fontWeight: "bold" }}
             value={room_number}
             onChangeText={setRoom_number}
           />
           <Text style={styles.textLabel}>บริษัขนส่ง </Text>
           <Input
-            style={{borderRadius: "50%", marginBottom: 10,}}
+            style={{ borderRadius: "50%", marginBottom: 10 }}
             textStyle={{ fontSize: 12, fontWeight: "bold" }}
             value={transport_name}
             onChangeText={setTransport_name}
           />
           <View style={[styles.footerContainer]}>
             <Button
-              style={[{ alignSelf: "center", borderWidth:0, marginTop: 20, marginRight: 5, borderRadius: "50%", backgroundColor: "#a7dbd6" }]}
+              style={[
+                {
+                  alignSelf: "center",
+                  borderWidth: 0,
+                  marginTop: 20,
+                  marginRight: 5,
+                  borderRadius: "50%",
+                  backgroundColor: "#a7dbd6",
+                },
+              ]}
               size="small"
               onPress={() => {
                 setIsEditing(false);
@@ -205,7 +265,15 @@ const BoxParcel = ({ item, width }) => {
               EDIT
             </Button>
             <Button
-              style={[{ alignSelf: "center", marginTop: 20, borderRadius: "50%", borderWidth: 0, backgroundColor: "#c8cfcf" }]}
+              style={[
+                {
+                  alignSelf: "center",
+                  marginTop: 20,
+                  borderRadius: "50%",
+                  borderWidth: 0,
+                  backgroundColor: "#c8cfcf",
+                },
+              ]}
               size="small"
               onPress={() => {
                 setIsEditing(false);
@@ -239,7 +307,6 @@ const styles = StyleSheet.create({
   },
   shadow: {
     flex: 1,
-    
   },
   txt: {
     fontSize: "12px",
@@ -251,7 +318,7 @@ const styles = StyleSheet.create({
     fontSize: "12px",
     fontWeight: "bold",
     marginBottom: 10,
-  }
+  },
 });
 
 export default BoxParcel;

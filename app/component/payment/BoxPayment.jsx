@@ -20,6 +20,7 @@ const BoxPyment = ({ item, width, navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [id, setId] = useState(item.item._id);
+  const [payment_id, setPayment_id] = useState(item.item.payment_id);
   const [amount, setAmount] = useState(item.item.amount);
   const [room_number, setRoom_number] = useState(item.item.room_number);
   const [payment_date, setPayment_date] = useState(item.item.payment_date);
@@ -54,6 +55,7 @@ const BoxPyment = ({ item, width, navigation }) => {
       onPress={() => {
         navigation.navigate("PaymentDetail", {
           id : id,
+          payment_id : payment_id,
           amount: amount,
           uri: url,
           payment_date: payment_date,

@@ -57,28 +57,27 @@ const CheckRoomDetail = ({ route, navigation }) => {
       
     }, [])
   );
-// เปิดด้วยแก้ url
-  // useEffect(() => {
-  //   const countRentBytype = async () => {
-  //   console.log(data)
-  //   if (data != undefined) {
-  //     await axios
-  //       .get(`${baseUrl}/countRentByType/${data.typeName}/${"available"}`, {
-  //         params: {
-  //           id : id
-  //       } })
-  //       .then((response) => {
-  //         // console.log(response.data);
-  //         setCountRoom(response.data);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  //   }
-  //   countRentBytype()
-  // },[data])
-  
+
+  useEffect(() => {
+    const countRentBytype = async () => {
+    console.log(data)
+    if (data != undefined) {
+      await axios
+        .get(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/countroom-bytype/${data.typeName}/${"available"}`, {
+          params: {
+            id : id
+        } })
+        .then((response) => {
+          // console.log(response.data);
+          setCountRoom(response.data.count);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    }
+    countRentBytype()
+  },[data])
   
   return (
     <View style={{ flex: 1, backgroundColor: "#FDF8F4" }}>

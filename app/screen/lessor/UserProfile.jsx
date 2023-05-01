@@ -37,23 +37,43 @@ function User({ userObject, navigation, contract, roomNumber, vehicle }) {
 
   const addCar = async (event) => {
     try {
-      const response = await axios.post(`${baseUrl}/addVehicle`, {
-        license_plate,
-        color,
-        brand,
-        room_number,
-      });
+      Alert.alert(
+        "ยืนยันที่จะบันทึก",
+        "",
+        [
+          {
+            text: "OK",
+            onPress: async (event) => {
+              const response = await axios.post(
+                `https://v79mzqvapb.execute-api.us-east-1.amazonaws.com/dev/vehicle/addvehicle`,
+                {
+                  license_plate,
+                  color,
+                  brand,
+                  room_number,
+                }
+              );
 
-      if (response.status === 200) {
-        alert("เพิ่มยานพาหนะสำเร็จ");
-        setAddVehicle(!addVehicle);
-        setLicense_plate("");
-        setColor("");
-        setBrand("");
-        setWarning(false);
-      } else {
-        throw new Error("An error ");
-      }
+              if (response.status === 200) {
+                alert("เพิ่มยานพาหนะสำเร็จ");
+                setAddVehicle(!addVehicle);
+                setLicense_plate("");
+                setColor("");
+                setBrand("");
+                setWarning(false);
+              } else {
+                throw new Error("An error ");
+              }
+            },
+          },
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
     } catch (error) {
       alert(error);
     }
@@ -68,6 +88,7 @@ function User({ userObject, navigation, contract, roomNumber, vehicle }) {
   }, [license_plate, color, brand]);
 
   const cancleContract = async (event) => {
+    console.log(contract.contract_id);
     const dataUser = {
       address: userObject.address,
       age: userObject.age,
@@ -93,21 +114,25 @@ function User({ userObject, navigation, contract, roomNumber, vehicle }) {
             text: "ยืนยัน",
             onPress: async (event) => {
               const updateContract = await axios.put(
-                `${baseUrl}/updateStatusContract/${room_number}/${status}`
+                `https://tvybcy5mwe.execute-api.us-east-1.amazonaws.com/dev/updatecontract-byid/${contract.contract_id}/${status}`
               );
 
               const updateRoom = await axios.put(
-                `${baseUrl}/updateStatus/${room_number}/${statusRoom}`
+                `https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/updaterent-bystatus/${room_number}/${statusRoom}`
               );
 
               let arrayids = [];
               vehicle.forEach((d) => {
-                arrayids.push(d._Id);
+                arrayids.push(d.vehicle_id);
               });
 
               if (arrayids.length > 0) {
+                console.log("delete success");
+                const arrayDelete = { vehicle_id: arrayids };
+                console.log(arrayDelete);
                 var deleteCar = await axios.delete(
-                  `${baseUrl}/deleteAllVehicle/${arrayids}`
+                  `https://v79mzqvapb.execute-api.us-east-1.amazonaws.com/dev/vehicle/deletevehicleall`,
+                  { data: arrayDelete }
                 );
               }
 
@@ -118,7 +143,8 @@ function User({ userObject, navigation, contract, roomNumber, vehicle }) {
               if (
                 updateContract.status === 200 &&
                 updateRoom.status === 200 &&
-                deleteUser.status === 200
+                deleteUser.status === 200 &&
+                deleteCar.status === 200
               ) {
                 alert("ยกเลิกสัญญาเช่าแล้ว");
                 navigation.dispatch(
@@ -145,12 +171,32 @@ function User({ userObject, navigation, contract, roomNumber, vehicle }) {
   };
 
   const deleteVehicle = (item) => {
-    axios
-      .post(`${baseUrl}/deleteVehicle`, item)
-      .then((response) => {
-        console.log("delete vehicle success");
-      })
-      .catch((error) => console.log("error deleteVehicle"));
+    console.log(item);
+    Alert.alert(
+      "ยืนยันที่จะลบยานพาหนะ",
+      "",
+      [
+        {
+          text: "OK",
+          onPress: async (event) => {
+            axios
+              .delete(
+                `https://v79mzqvapb.execute-api.us-east-1.amazonaws.com/dev/vehicle/deletevehicle/${item.vehicle_id}`
+              )
+              .then((response) => {
+                console.log("delete vehicle success");
+              })
+              .catch((error) => console.log("error deleteVehicle"));
+          },
+        },
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -959,9 +1005,9 @@ const UserProfile = ({ route, navigation }) => {
   useEffect(() => {
     const url = `${baseUrl}/getUserNum/${categoryTitle}`;
 
-    const urlContract = `${baseUrl}/getContractNum/${categoryTitle}`;
+    const urlContract = `https://tvybcy5mwe.execute-api.us-east-1.amazonaws.com/dev/getcontractnum/${categoryTitle}/rent`;
 
-    const urlVehicle = `${baseUrl}/getVehicleNum/${categoryTitle}`;
+    const urlVehicle = `https://v79mzqvapb.execute-api.us-east-1.amazonaws.com/dev/vehicle/getvehicle-bynum/${categoryTitle}`;
 
     const fetchUsers = async () => {
       try {
@@ -974,8 +1020,8 @@ const UserProfile = ({ route, navigation }) => {
           vehicle.status === 200
         ) {
           setUser(response.data);
-          setContract(contract.data[0]);
-          setVehicle(vehicle.data);
+          setContract(contract.data.data);
+          setVehicle(vehicle.data.data);
           // console.log(response.data);
           //console.log(contract.data[0]);
           //console.log(response.data);

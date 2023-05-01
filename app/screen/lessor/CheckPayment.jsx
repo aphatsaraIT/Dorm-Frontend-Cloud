@@ -22,29 +22,26 @@ const CheckPayment = ({ route, navigation }) => {
     const [payment, setPayment] = useState(null);
     const [room_number, setRoom_number] = useState("");
     const [payment_status, setPayment_status] = useState("checking_payment");
-    const [url, setUrl] = useState(`${baseUrl}/getPaymentStatus/${payment_status}`);
+    const [url, setUrl] = useState(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/getpaymentbystatus/${payment_status}`);
  
-    console.log(select);
+    // console.log(select);
     useFocusEffect(
         useCallback(() => {
-            if(select === "waitingCheck"){
+            if(select == "waitingCheck"){
               setPayment_status("checking_payment")
-              setUrl(`${baseUrl}/getPaymentStatus/${payment_status}`)
-                // console.log(select+"po")
+              setUrl(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/getpaymentbystatus/${payment_status}`)
+              console.log(select)
               }else{
-                
                 setPayment_status("checked")
-                setUrl(`${baseUrl}/getPaymentStatus/${payment_status}`)
-                // console.log(select)
+                setUrl(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/getpaymentbystatus/${payment_status}`)
+                console.log(select)
               }
-              
-         const url1 = `${baseUrl}/getPaymentStatus/${payment_status}`;
           
           const fetchUsers = async () => {
             try {
               const response = await axios.get(url);
               if (response.status === 200) {
-                setPayment(response.data);
+                setPayment(response.data.data);
                 return;
               } else {
                 throw new Error("Failed to fetch checking");
@@ -94,7 +91,7 @@ const CheckPayment = ({ route, navigation }) => {
             data={payment}
             renderItem={renderGridItem}
             numColumns={1}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item.payment_id}
             navigation={navigation}
           />
         </View>
