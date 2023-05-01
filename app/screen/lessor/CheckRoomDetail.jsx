@@ -61,13 +61,13 @@ const CheckRoomDetail = ({ route, navigation }) => {
     console.log(data)
     if (data != undefined) {
       await axios
-        .get(`${baseUrl}/countRentByType/${data.typeName}/${"available"}`, {
+        .get(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/countroom-bytype/${data.typeName}/${"available"}`, {
           params: {
             id : id
         } })
         .then((response) => {
           // console.log(response.data);
-          setCountRoom(response.data);
+          setCountRoom(response.data.count);
         })
         .catch((err) => {
           console.log(err);

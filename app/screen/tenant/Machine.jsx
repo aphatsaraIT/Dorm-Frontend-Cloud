@@ -21,6 +21,8 @@ const Machine = ({ route, navigation }) => {
   const user = useSelector((state) => state.user)
 
   const [data, setData] = useState(null);
+  const [all, setAll] = useState(null);
+
   const [select, setSelect] = useState("washing");
   const [room_number, setRoom_number] = useState(user.room_number);
   const [url, setUrl] = useState(`${baseUrl}/getParcelNum/${room_number}`);
@@ -36,19 +38,18 @@ const Machine = ({ route, navigation }) => {
     useCallback(() => {
       if(select == 'washing'){
         setRoom_number(user.room_number)
-        setUrl(`${baseUrl}/getMachineByType/${select}`)
-        // console.log("p")
-      }else{
-        setUrl(`${baseUrl}/getMachineByType/${select}`)
-        // console.log("Hello")
+        setUrl(`https://hryk0ifyjb.execute-api.us-east-1.amazonaws.com/dev/machine/getmachinebytype/${select}`)
+      } else {
+        setUrl(`https://hryk0ifyjb.execute-api.us-east-1.amazonaws.com/dev/machine/getmachinebytype/${select}`)
       }
-
+  
       const fetchUsers = async () => {
         try {
           const response = await axios.get(url);
           if (response.status === 200) {
-            setData(response.data);
-           
+            setData(response.data.data);
+            setAll(response.data.data);
+            // console.log(response.data.data);
             return;
           } else {
             throw new Error("Failed to fetch parcel");
@@ -58,8 +59,21 @@ const Machine = ({ route, navigation }) => {
         }
       };
       fetchUsers();
-    }, [data])
+    }, [select, url])
   );
+  
+  
+  useEffect(() => {
+    if (data != null) {
+      let newUser = [...all];
+      if (displayBuild != "ตึก") {
+        newUser = newUser.filter((x) => x.build == displayBuild.slice(7, 8));
+        console.log("---------------------------")
+        console.log(newUser);
+      }
+      setData(newUser);
+    }
+  }, [selectedBuild]);
 
   const renderGridItem = (itemData) => {
     // console.log(itemData);
@@ -123,15 +137,15 @@ const Machine = ({ route, navigation }) => {
         </View>
 
         <View style={{ flex: 3 }}>
-         
+        {data != null && (
           <FlatList
             data={data}
             renderItem={renderGridItem}
             numColumns={2}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item.machine_id}
             navigation={navigation}
           />
-            
+            )}
         </View>
       </View>
     </View>

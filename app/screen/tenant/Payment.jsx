@@ -101,7 +101,7 @@ if (h > 1000) {
           const re = await axios.post(`${baseUrl}/file/upload`, formData, config);
           setUrlImg(re.data)
           console.log(re.data);
-          const res = await axios.post(`${baseUrl}/addPayment`, {
+          const res = await axios.post(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/addpayment`, {
             payment_date : date,
             payment_time : time,
             payment_note : note,
@@ -120,7 +120,7 @@ if (h > 1000) {
         }
 
     try {
-      const response = await axios.put(`${baseUrl}/updateStatusInvoice/${id}/${statusPay}`);
+      const response = await axios.put(`https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/updatestatus-invoice/${id}/${statusPay}`);
     } catch (err) {
       console.log(err);
     }
@@ -166,7 +166,7 @@ if (h > 1000) {
             top: 6,
           }}
         >
-          ฿{total.toFixed(2)}
+          ฿{total}
         </Text>
       </View>
       <Image

@@ -92,7 +92,7 @@ class rent {
     this.room_price =0;
     this.room_type = "";
     this.common_fee = 500;
-    this. room_status = "available";
+    this.room_status = "available";
   }
   room_number;
   floor;
@@ -182,22 +182,23 @@ export default function RoomForm({ navigation, route }) {
     r.room_price = roomOftype.room_price
     r.room_type =  roomOftype.room_type
     let roomNo;
+    console.log("addRent: "+ r)
     if (roomOftype.room_number.includes(",")) {
       roomNo = roomOftype.room_number.split(",")
       roomNo.map(async (item) => {
         if (parseInt(item) < 10) {
           item = "0".concat(item)
         }
-        r.room_number = r.build.concat(r.floor, item);
-       await axios
-      .post(`${baseUrl}/addRent`, r)
+        r.room_number = r.build.concat(r.floor, item)
+       const addRent1 = await axios
+      .put(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/addrent`, r)
       .then((response) => {
         console.log(response)
       })
       .catch((err) => {
         console.log(err);
       });
-        // console.log(r.room_number)
+        console.log(addRent1)
     })
     }
     else if (roomOftype.room_number.includes("-")) {
@@ -211,15 +212,15 @@ export default function RoomForm({ navigation, route }) {
           item = String(i)
         }
        r.room_number = r.build.concat(r.floor, item);
-        await axios
-      .post(`${baseUrl}/addRent`, r)
+       const addRent1 = await axios
+      .put(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/addrent`, r)
       .then((response) => {
         console.log(response.data)
       })
       .catch((err) => {
         console.log(err);
       });
-      // console.log(r.room_number)
+       console.log(addRent1);
       }
     }
     addRoomType();

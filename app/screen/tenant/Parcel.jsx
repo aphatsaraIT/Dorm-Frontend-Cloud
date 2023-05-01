@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  FlatList,
+  FlatList, Alert,
 } from "react-native";
 import { Divider, Layout, Modal } from "@ui-kitten/components";
 import {
@@ -33,7 +33,7 @@ const Parcel = ({ route, navigation }) => {
   const [parcel, setParcel] = useState(null);
   const [select, setSelect] = useState("myParcel");
   const [room_number, setRoom_number] = useState(user.room_number);
-  const [url, setUrl] = useState(`${baseUrl}/getParcelNum/${room_number}`);
+  const [url, setUrl] = useState(`https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/getparcelnum/${room_number}`);
 
   const [countReceived, setCountReceived] = useState(0);
   const [countNotReceived, setCountNotReceived] = useState(0);
@@ -42,19 +42,19 @@ const Parcel = ({ route, navigation }) => {
     useCallback(() => {
       if(select == 'myParcel'){
         setRoom_number(user.room_number)
-        setUrl(`${baseUrl}/getParcelNum/${user.room_number}`)
+        setUrl(`https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/getparcelnum/${user.room_number}`)
         // console.log("p")
       }else{
-        setUrl(`${baseUrl}/parcel`)
+        setUrl(`https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/getparcel`)
         // console.log("Hello")
       }
-      const url1 = `${baseUrl}/getParcelNum/${room_number}`;
+
       
       const fetchUsers = async () => {
         try {
           const response = await axios.get(url);
           if (response.status === 200) {
-            setParcel(response.data);
+            setParcel(response.data.data);
            
             return;
           } else {
@@ -105,7 +105,7 @@ const Parcel = ({ route, navigation }) => {
             data={parcel}
             renderItem={renderGridItem}
             numColumns={1}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item.parcel_id}
             navigation={navigation}
           />
         </View>

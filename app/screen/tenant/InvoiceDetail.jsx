@@ -64,8 +64,8 @@ function User({userObject, navigation, userInfo}) {
         alert("เกินกำหนดชำระบิล คิดค่าปรับเดือนละ 1000 บาท");
 
         try {
-          const response = await axios.put(`${baseUrl}/updateInvoice`, {
-          _id: userObject._id,
+          const response = await axios.put(`https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/updateinvoice`, {
+          invoice_id: userObject.invoice_id,
           month : userObject.month,
           year : userObject.year,
           room_number : userObject.room_number,
@@ -99,6 +99,7 @@ function User({userObject, navigation, userInfo}) {
 
   console.log(nextMonth);
   console.log(currentMonth + " " + currentYear)
+  console.log(userObject[0])
 
   return (
     <View style={styles.container1}>
@@ -114,7 +115,7 @@ function User({userObject, navigation, userInfo}) {
               fontSize: "32px",
             }}
           >
-            ฿{userObject.total.toFixed(2)}
+            ฿{userObject.total}
           </Text>
           <Text
             style={{
@@ -152,7 +153,7 @@ const InvioveDetail = ({ route, navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-    const url = `${baseUrl}/getInvoice/${categoryTitle}/${month}/${year}`;
+    const url = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoice-bymonth/${categoryTitle}/${month}/${year}`;
     const urlUser = `${baseUrl}/getUserNum/${categoryTitle}`;
 
     console.log("test");
@@ -161,7 +162,7 @@ const InvioveDetail = ({ route, navigation }) => {
         const response = await axios.get(url);
         const resUser = await axios.get(urlUser);
         if (response.status === 200 && resUser.status === 200) {
-          setInvoice(response.data);
+          setInvoice(response.data.data[0]);
           setUser(resUser.data);
           //console.log(response.data);
           // console.log(resUser.data);

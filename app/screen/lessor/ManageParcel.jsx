@@ -37,9 +37,9 @@ const ManageParcel = ({ route, navigation }) => {
       const received = "received";
       const not_received = "not_received";
 
-      const url = `${baseUrl}/parcel`;
-      const urlCountReceived = `${baseUrl}/countParcel/${received}`;
-      const urlCountNotReceived = `${baseUrl}/countParcel/${not_received}`;
+      const url = `https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/getparcel`;
+      const urlCountReceived = `https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/countparcel/${received}`;
+      const urlCountNotReceived = `https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/countparcel/${not_received}`;
       const fetchUsers = async () => {
         try {
           const response = await axios.get(url);
@@ -51,10 +51,10 @@ const ManageParcel = ({ route, navigation }) => {
             countReceived.status === 200 &&
             countNotReceived.status === 200
           ) {
-            console.log(response.data)
-            setParcel(response.data);
-            setCountReceived(countReceived.data);
-            setCountNotReceived(countNotReceived.data);
+            // console.log(response.data)
+            setParcel(response.data.data);
+            setCountReceived(countReceived.data.count);
+            setCountNotReceived(countNotReceived.data.count);
             return;
           } else {
             throw new Error("Failed to fetch parcel");
@@ -190,7 +190,7 @@ const ManageParcel = ({ route, navigation }) => {
             data={parcel}
             renderItem={renderGridItem}
             numColumns={1}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item.parcel_id}
             navigation={navigation}
           />
         </View>

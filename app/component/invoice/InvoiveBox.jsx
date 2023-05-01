@@ -14,13 +14,14 @@ const InvoiceBox = (props) => {
   //   let get = INVOICE.filter((item) => item.id == id)[0];
   //   setData(get);
   // }, [id]);
+ console.log(props.data.total)
   return (
     <View style={styles.container}>
     {props.filter === 'AllBill' && (
       <Card
         style={[styles.cardContainer]}
         onPress={() =>
-          props.navigation.navigate("InvoiceDetail", {  id:  props.data.id,
+          props.navigation.navigate("InvoiceDetail", {  id:  props.data.invoice_id,
               categoryTitle:  props.data.room_number, month: props.data.month, year: props.data.year})
         }
       >
@@ -62,7 +63,7 @@ const InvoiceBox = (props) => {
               style={[styles.txt, { backgroundColor: "#CAEEF8", padding: 5 }]}
             >
               {" "}
-              {props.data.total.toFixed(2)}{" "}
+              {props.data.total}{" "}
             </Text>
             <Text style={styles.txt}> บาท </Text>
           </View>
@@ -91,7 +92,7 @@ const InvoiceBox = (props) => {
         <Card
         style={[styles.cardContainer]}
         onPress={() =>
-          props.navigation.navigate("InvoiceDetail", {  id:  props.data.id,
+          props.navigation.navigate("InvoiceDetail", {  id:  props.data.invoice_id,
               categoryTitle:  props.data.room_number, month: props.data.month, year: props.data.year})
         }
       >
@@ -133,7 +134,7 @@ const InvoiceBox = (props) => {
               style={[styles.txt, { backgroundColor: "#CAEEF8", padding: 5 }]}
             >
               {" "}
-              {props.data.total.toFixed(2)}{" "}
+              {props.data.total}{" "}
             </Text>
             <Text style={styles.txt}> บาท </Text>
           </View>

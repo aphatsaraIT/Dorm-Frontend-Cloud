@@ -21,21 +21,21 @@ function User({userObject, month, year, user, roomInvoice, rentPrice, meterWater
   
   // console.log(dorm_fee)
   // console.log(common_fee)
-  // console.log(expenses)
+  console.log(roomInvoice)
 
   return (
     <View style={styles.container}>
-    { user && roomInvoice && meterWater && meterElec && (
-      <Card style={[styles.cardContainer]} disabled={true}>
-        <BillRoomInvoice roomInvoice={roomInvoice} user={user} month={month} year={year}  meterWater={meterWater} meterElec={meterElec} />
-      </Card>
-    )}
-    { user && !roomInvoice && rentPrice && meterWater && meterElec && (
+   
+    { user && roomInvoice?.length === 0 && rentPrice && meterWater && meterElec && (
       <Card style={[styles.cardContainer]} disabled={true}>
         <FormInvoice rentPrice={rentPrice} user={user} month={month} year={year} meterWater={meterWater} meterElec={meterElec} />
       </Card>
     )}
-    
+    { user && roomInvoice?.length > 0 && meterWater && meterElec && (
+      <Card style={[styles.cardContainer]} disabled={true}>
+        <BillRoomInvoice roomInvoice={roomInvoice} user={user} month={month} year={year}  meterWater={meterWater} meterElec={meterElec} />
+      </Card>
+    )}
     
         </View>
   );
@@ -52,10 +52,10 @@ const BillInvoice = ({ route, navigation }, props) => {
   const [electricity, setElectricity] = useState(null);
 
   useEffect(() => {
-    const url = `${baseUrl}/getInvoiceNum/${categoryTitle}`;
+    const url = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoicebynum/${categoryTitle}`;
     const urlUser = `${baseUrl}/getUserNum/${categoryTitle}`;
-    const urlRoomInvoice = `${baseUrl}/getInvoice/${categoryTitle}/${month}/${year}`;
-    const urlRentPrice = `${baseUrl}/getRoomNum/${categoryTitle}`;
+    const urlRoomInvoice = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoice-bymonth/${categoryTitle}/${month}/${year}`;
+    const urlRentPrice = `https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/getroom-bynum/${categoryTitle}`;
     const urlWaterMeter =`${baseUrl}/meter/getMeterInvoice/${categoryTitle}/water/${month} ${year}`;
     const urlElecMeter =`${baseUrl}/meter/getMeterInvoice/${categoryTitle}/electricity/${month} ${year}`;
 
@@ -70,16 +70,19 @@ const BillInvoice = ({ route, navigation }, props) => {
 
         if (response.status === 200 && resUser.status === 200 && resInvoice.status === 200 && resRentPrice.status === 200 && resWater.status === 200 && resElectric.status === 200) {
           
-              setInvoice(response.data);
+              setInvoice(response.data.data);
               setUser(resUser.data);
-              setRoomInvoice(resInvoice.data);
-              setRentPrice(resRentPrice.data);
+              setRoomInvoice(resInvoice.data.data);
+              setRentPrice(resRentPrice.data.data);
               setElectricity(resElectric.data);
               setWater(resWater.data);
 
-              console.log(resRentPrice.data);
-              console.log(resElectric.data);
-              console.log(resWater.data);
+              console.log(resInvoice.data.data[0])
+              console.log(resRentPrice.data.data)
+
+              // console.log(resRentPrice.data);
+              // console.log(resElectric.data);
+              // console.log(resWater.data);
 
           if(resElectric.data === "" || resWater.data === ""){
             
