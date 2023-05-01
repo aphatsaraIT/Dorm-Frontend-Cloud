@@ -54,7 +54,7 @@ const AddParcel = ({ route, navigation }) => {
             {
               text: "OK",
               onPress: async (event) => {
-                const response = await axios.post(`${baseUrl}/addParcel`, {
+                const response = await axios.post(`https://qvfnlskec8.execute-api.us-east-1.amazonaws.com/dev/addparcel`, {
                   name,
                   room_number,
                   sent_date,

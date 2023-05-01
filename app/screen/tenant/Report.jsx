@@ -59,9 +59,8 @@ const Report = () => {
 
   useEffect(() => {
     const getReport = async () => {
-      const reports = await axios.get(`${baseUrl}/report/getall/`)
-      console.log(reports.data)
-      let sortDate = reports.data
+      const reports = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/getall/`)
+      let sortDate = reports.data.data
       sortDate.sort((a, b) => {
         function convertDate(text) {
           const date = text.replace(",", "")
@@ -83,13 +82,11 @@ const Report = () => {
   
   useEffect(() => {
     const queryByStatus = async() => {
-      const response = await axios.get(`${baseUrl}/report/status/`, { params: { status: selectStatus } })
-      
-      let sortDate = response.data
+      console.log(selectStatus)
+      const response = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/status/${selectStatus}`)
+      let sortDate = response.data.data
       sortDate.sort((a, b) => {
         function convertDate(text) {
-  
-          
           const date = text.replace(",", "")
           const arr = date.split(" ")
           const arrDate = arr[0].split("/")
@@ -176,9 +173,10 @@ const Report = () => {
     createReport.image = imageUrl
     createReport.date = date
     
-    const res = await axios.post(`${baseUrl}/report/add`, createReport)
+    const res = await axios.post(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/add`, createReport)
     setLoading(false)
-    Alert.alert(res.data, undefined, [
+    console.log(res.data.data)
+    Alert.alert(res.data.message, undefined, [
       {
         text: "Yes", onPress: () => {
           
@@ -187,9 +185,8 @@ const Report = () => {
       },
     ])
     const getReport = async() => {
-      const reports = await axios.get(`${baseUrl}/report/getall/`)
-      console.log(reports.data)
-      let sortDate = reports.data
+      const reports = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/getall/`)
+      let sortDate = reports.data.data
       sortDate.sort((a, b) => {
         function convertDate(text) {
           const date = text.replace(",", "")

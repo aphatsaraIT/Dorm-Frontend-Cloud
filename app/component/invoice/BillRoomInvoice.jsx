@@ -44,11 +44,14 @@ const BillRoomInvoice = (props) => {
    
   // }, [])
   // console.log(new Date(`currentDay+currentMonth +currentYear`));
-  const [dorm_fee, setDorm_fee] = useState(props.roomInvoice.dorm_fee);
-  const [water_fee, setWater_fee] = useState(props.roomInvoice.water_fee);
-  const [electricity_fee, setElectricity_fee] = useState(props.roomInvoice.electricity_fee);
-  const [common_fee, setCommon_fee] = useState(props.roomInvoice.common_fee);
-  const [expenses, setExpenses] = useState(props.roomInvoice.expenses);
+  console.log('------------------------------------')
+  console.log(props.roomInvoice[0].dorm_fee)
+  console.log(props.roomInvoice[0].status)
+  const [dorm_fee, setDorm_fee] = useState(props.roomInvoice[0].dorm_fee);
+  const [water_fee, setWater_fee] = useState(props.roomInvoice[0].water_fee);
+  const [electricity_fee, setElectricity_fee] = useState(props.roomInvoice[0].electricity_fee);
+  const [common_fee, setCommon_fee] = useState(props.roomInvoice[0].common_fee);
+  const [expenses, setExpenses] = useState(props.roomInvoice[0].expenses);
   const [amount, setAmount] = useState(0);
   const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(0);
@@ -85,8 +88,8 @@ const BillRoomInvoice = (props) => {
   const updateBill = async (event) => {
     try {
       const updateInvoice = await axios.put(
-        `${baseUrl}/updateInvoice`, {
-          _id: props.roomInvoice._id,
+        `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/updateinvoice`, {
+          invoice_id: props.roomInvoice.invoice_id,
           month : props.roomInvoice.month,
           year : props.roomInvoice.year,
           room_number : props.roomInvoice.room_number,
@@ -156,7 +159,7 @@ const BillRoomInvoice = (props) => {
           }}
         >
           <Text style={styles.txtHead}> รายละเอียดหัวบิล </Text>
-          <Text style={styles.txtHead}> ชื่อ คุณ {props.user.first_name} </Text>
+          <Text style={styles.txtHead}> ชื่อ คุณ {props.user.first_name} นะ</Text>
           <Text style={[styles.txtHead]}> เบอร์โทร : </Text>
           <Text style={[styles.txtHead]}>{props.user.tel_no1} </Text>
           <Text style={styles.txtHead}> เบอร์โทรสำรอง : </Text>
@@ -168,9 +171,9 @@ const BillRoomInvoice = (props) => {
             <Text style={styles.txtHead}> สถานะบิล</Text>
             <Text style={[styles.txtHead, { color: "red", marginLeft: 20 }]}>
               {" "}
-              {props.roomInvoice.status == "UNAPPROVED_BILL"
+              {props.roomInvoice[0].status == "UNAPPROVED_BILL"
                 ? "ยังไม่ชำระ"
-                : props.roomInvoice.status == "checking_payment" ? "กำลังตรวจสอบ" : props.roomInvoice.status == "WRONG_BILL" ? "การชำระเงินผิดพลาด" : "ชำระแล้ว"}
+                : props.roomInvoice[0].status == "checking_payment" ? "กำลังตรวจสอบ" : props.roomInvoice[0].status == "WRONG_BILL" ? "การชำระเงินผิดพลาด" : "ชำระแล้ว"}
             </Text>
           </View>
 

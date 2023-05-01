@@ -40,10 +40,10 @@ const ReportCard = (props) => {
     setLoading(true)
     const newcomment = new comment(commentInput);
     item.comments.push(newcomment);
-    console.log(item.comments)
-    const res = await axios.put(`${baseUrl}/report/update/`, item);
+    console.log(item)
+    const res = await axios.post(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/update/`, item);
     setLoading(false)
-    console.log( item.comments)
+    console.log(res.data.message)
   };
   
   return (

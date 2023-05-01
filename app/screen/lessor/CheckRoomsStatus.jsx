@@ -63,10 +63,10 @@ const CheckRoomsStatus = ({ route, navigation }) => {
     useCallback(() => {
       //console.log("Hello CheckroomStatus");
       axios
-        .get(`${baseUrl}/rent`)
+        .get(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/getrent`)
         .then((response) => {
-          setUser(response.data);
-          setAll(response.data);
+          setUser(response.data.data);
+          setAll(response.data.data);
         })
         .catch((error) => console.log("error checkroomstatus"));
       return () => {
@@ -97,17 +97,17 @@ const CheckRoomsStatus = ({ route, navigation }) => {
                   ]);
                   navigation.navigate("ReserveRoom", {
                     prev: "CheckRoomsStatus",
-                    categoryId: itemData.item._id,
+                    categoryId: itemData.item.rent_id,
                     categoryTitle: itemData.item.room_number,
                   });
                 } else if (itemData.item.room_status === "reserve") {
                   navigation.navigate("DetailReserve", {
-                    categoryId: itemData.item._id,
+                    categoryId: itemData.item.rent_id,
                     categoryTitle: itemData.item.room_number,
                   });
                 } else {
                   navigation.navigate("UserProfile", {
-                    categoryId: itemData.item._id,
+                    categoryId: itemData.item.rent_id,
                     categoryTitle: itemData.item.room_number,
                   });
                 }
@@ -135,17 +135,17 @@ const CheckRoomsStatus = ({ route, navigation }) => {
                   ]);
                   navigation.navigate("ReserveRoom", {
                     prev: "CheckRoomsStatus",
-                    categoryId: itemData.item._id,
+                    categoryId: itemData.item.rent_id,
                     categoryTitle: itemData.item.room_number,
                   });
                 } else if (itemData.item.room_status === "reserve") {
                   navigation.navigate("DetailReserve", {
-                    categoryId: itemData.item._id,
+                    categoryId: itemData.item.rent_id,
                     categoryTitle: itemData.item.room_number,
                   });
                 } else {
                   navigation.navigate("UserProfile", {
-                    categoryId: itemData.item._id,
+                    categoryId: itemData.item.rent_id,
                     categoryTitle: itemData.item.room_number,
                   });
                 }

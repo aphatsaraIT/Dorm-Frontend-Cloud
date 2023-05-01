@@ -85,10 +85,10 @@ const ManageInvoice = ({ route, navigation }) => {
     useCallback(() => {
       //console.log("Hello CheckroomStatus");
       axios
-        .get(`${baseUrl}/rent`)
+        .get(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/getrent`)
         .then((response) => {
-          setRoom(response.data);
-          setAll(response.data);
+          setRoom(response.data.data);
+          setAll(response.data.data);
         })
         .catch((error) => console.log("error checkroomstatus"));
       return () => {
@@ -170,11 +170,12 @@ const ManageInvoice = ({ route, navigation }) => {
                       month: month,
                       year: year
                     });
+                    console.log(month + year)
                   } else {
                     Alert.alert("ยังไม่มีผู้เช่า", "ในห้องนี้", [
                       { text: "OK", onPress: () => console.log("OK Pressed") },
                     ]);
-                    console.log(itemData.item.room_status)
+                    // console.log(itemData.item.room_status)
                   }
                 }
               }}

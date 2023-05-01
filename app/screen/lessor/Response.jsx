@@ -22,8 +22,8 @@ const Response = () => {
     console.log(user)
     setLoading(true);
     const getReport = async() => {
-      const reports = await axios.get(`${baseUrl}/report/getall/`)
-      let sortDate = reports.data
+      const reports = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/getall/`)
+      let sortDate = reports.data.data
       console.log(sortDate)
       sortDate.sort((a, b) => {
         function convertDate(text) {
@@ -37,7 +37,7 @@ const Response = () => {
         return convertDate(b.date) - convertDate(a.date)
       }
       );
-      console.log(reports.data)
+      console.log("test"+ reports.data.data)
       setLoading(false);
       setAllReport(sortDate)
       setListBySelect(sortDate)
@@ -48,10 +48,10 @@ const Response = () => {
   useEffect(() => {
     const queryByStatus = async () => {
       setLoading(true);
-      const response = await axios.get(`${baseUrl}/report/status/`, { params: { status: selectStatus } })
+      const response = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/status/${selectStatus}`, { params: { status: selectStatus } })
       
-      let sortDate = response.data
-      console.log(sortDate)
+      let sortDate = response.data.data
+      console.log("test "+sortDate)
       sortDate.sort((a, b) => {
         function convertDate(text) {
           const date = text.replace(",", "")
@@ -75,7 +75,7 @@ const Response = () => {
     }
   }, [selectStatus])
   const getallReport = async() => {
-    const reports = await axios.get(`${baseUrl}/report/getall/`)
+    const reports = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/getall/`)
     let sortDate = reports.data
     sortDate.sort((a, b) => {
       function convertDate(text) {
@@ -96,7 +96,7 @@ const Response = () => {
     setLoading(true);
     
   rep.status =true
-    const res = await axios.put(`${baseUrl}/report/update/`,rep);
+    const res = await axios.post(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/update/`,rep);
     setLoading(false);
   }
   return (

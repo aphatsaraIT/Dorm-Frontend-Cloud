@@ -42,14 +42,14 @@ const Invoices = ({ route, navigation }) => {
   
   
   useEffect(() => {
-    const url = `${baseUrl}/getListInvoiceNum/${myUser.room_number}`;
+    const url = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoicebynum/${myUser.room_number}`;
     const fetchUsers = async () => {
       try {
         const response = await axios.get(url);
         if (response.status === 200) {
-          setUser(response.data);
+          setUser(response.data.data);
           console.log("POPO")
-          console.log(response.data);
+          console.log(response.data.data);
           return;
         } else {
           throw new Error("Failed to fetch users invoice user");

@@ -48,6 +48,7 @@ const MainLessor = ({ route, navigation }) => {
       setMonthandyear(currentMonth + " " + currentYear);
     };
     formatedDate(dateCurrent);
+    console.log(monthandyear)
   });
  
   const [countUser, setCountUser] = useState(0);
@@ -76,9 +77,9 @@ const MainLessor = ({ route, navigation }) => {
   useEffect(() => {
     axios
 
-      .get(`${baseUrl}/countRoom/${room_status}`)
+      .get(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/countroom-bystatus/available`)
       .then((response) => {
-        setCountRoom(response.data);
+        setCountRoom(response.data.count);
       })
       .catch((error) => console.log("error countRoom"));
   });
@@ -87,28 +88,29 @@ const MainLessor = ({ route, navigation }) => {
   useEffect(() => {
     axios
       .get(
-        `${baseUrl}/countPayInvoice/${currentMonth}/${currentYear}/${status}`
+        `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/countinvoice/${currentMonth}/${currentYear}/${status}`
       )
       .then((response) => {
-        setCountPayInvoice(response.data.toFixed(2));
+        setCountPayInvoice(response.data.totalAmount.toFixed(2));
       })
       .catch((error) => console.log("error countPayInvoice"));
   });
 
   useEffect(() => {
+    console.log(typeWater)
     axios
-      .get(`${baseUrl}/meter/countPayMeter/${monthandyear}/${typeWater}`)
+      .get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/countpaymeter/${monthandyear}/${typeWater}`)
       .then((response) => {
-        setCountUseWater(response.data.toFixed(2));
+        setCountUseWater(response.data.data.toFixed(2));
       })
       .catch((error) => console.log("error countUseWater"));
   });
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}/meter/countPayMeter/${monthandyear}/${typeElec}`)
+      .get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/countpaymeter/${monthandyear}/${typeElec}`)
       .then((response) => {
-        setCountUseElec(response.data.toFixed(2));
+        setCountUseElec(response.data.data.toFixed(2));
       })
       .catch((error) => console.log("error countUseElec"));
   });
