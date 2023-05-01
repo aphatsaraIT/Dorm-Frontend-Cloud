@@ -54,10 +54,11 @@ const BillInvoice = ({ route, navigation }, props) => {
   useEffect(() => {
     const url = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoicebynum/${categoryTitle}`;
     const urlUser = `${baseUrl}/getUserNum/${categoryTitle}`;
+    const urlWaterMeter =`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getmeterinvoice/${categoryTitle}/water/${month} ${year}`;
+    const urlElecMeter =`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getmeterinvoice/${categoryTitle}/electricity/${month} ${year}`;
     const urlRoomInvoice = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoice-bymonth/${categoryTitle}/${month}/${year}`;
     const urlRentPrice = `https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/getroom-bynum/${categoryTitle}`;
-    const urlWaterMeter =`${baseUrl}/meter/getMeterInvoice/${categoryTitle}/water/${month} ${year}`;
-    const urlElecMeter =`${baseUrl}/meter/getMeterInvoice/${categoryTitle}/electricity/${month} ${year}`;
+
 
     const fetchUsers = async () => {
       try {
@@ -72,11 +73,10 @@ const BillInvoice = ({ route, navigation }, props) => {
           
               setInvoice(response.data.data);
               setUser(resUser.data);
+              setElectricity(resElectric.data.data);
+              setWater(resWater.data.data);
               setRoomInvoice(resInvoice.data.data);
               setRentPrice(resRentPrice.data.data);
-              setElectricity(resElectric.data);
-              setWater(resWater.data);
-
               console.log(resInvoice.data.data[0])
               console.log(resRentPrice.data.data)
 

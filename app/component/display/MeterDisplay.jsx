@@ -28,7 +28,7 @@ const MeterDisplay = (props) => {
   const [searchPhrase, setSearchPhrase] = useState("");
   const [clicked, setClicked] = useState(false);
   const [fakeData, setFakeData] = useState();
-  const [date, setDate] = useState("2022");
+  const [date, setDate] = useState("2023");
   const [visible, setVisible] = React.useState(false);
   const [allInfo, setAllInfo] = useState([]);
   const [lastest, setLastest] = useState(false);
@@ -40,10 +40,10 @@ const MeterDisplay = (props) => {
   useEffect(() => {
     setLoading(true)
     const getInfoMeter = async () => {
-      let info = await axios.get(`${baseUrl}/meter/getbytype/${props.type}`);
-      // console.log(info.data)
-      setInfoBySelect(info.data)
-      setLists(info.data)
+      let info = await axios.get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getbytype/${props.type}`);
+      console.log(" test   "+info.data.data)
+      setInfoBySelect(info.data.data)
+      setLists(info.data.data)
       setLoading(false)
     };
     getInfoMeter();
@@ -53,14 +53,14 @@ const MeterDisplay = (props) => {
     setLoading(true)
     const changeList = async() => {
       if (listBy == "All Meter Data") {
-        const res = await axios.get(`${baseUrl}/meter/getbytype/${props.type}`);
-        setLists(res.data)
-        setInfoBySelect(res.data)
+        const res = await axios.get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getbytype/${props.type}`);
+        setLists(res.data.data)
+        setInfoBySelect(res.data.data)
       }
       else {
-        const res = await axios.get(`${baseUrl}/meter/getbymonthandyear/${listBy}/${props.type}`)
-        setInfoBySelect(res.data)
-        setLists(res.data)
+        const res = await axios.get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getbymonthandyear/${listBy}/${props.type}`)
+        setInfoBySelect(res.data.data)
+        setLists(res.data.data)
       }
       setLoading(false)
     }

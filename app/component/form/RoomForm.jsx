@@ -11,7 +11,7 @@ import AddRoomType from "../../screen/lessor/AddRoomType";
 import Spinner from 'react-native-loading-spinner-overlay';
 import axios from "axios";
 import * as FileSystem from "expo-file-system";
-import {baseUrl} from "@env"
+import {baseUrl, mingUrl} from "@env"
 const secondIndicatorStyles = {
   stepIndicatorSize: 30,
   currentStepIndicatorSize: 40,
@@ -193,10 +193,11 @@ export default function RoomForm({ navigation, route }) {
        const addRent1 = await axios
       .put(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/addrent`, r)
       .then((response) => {
-        console.log(response)
+        console.log("check "+response.data.data)
+        console.log("body "+r)
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err "+err);
       });
         console.log(addRent1)
     })
@@ -212,10 +213,11 @@ export default function RoomForm({ navigation, route }) {
           item = String(i)
         }
        r.room_number = r.build.concat(r.floor, item);
+
        const addRent1 = await axios
       .put(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/addrent`, r)
       .then((response) => {
-        console.log(response.data)
+        console.log(response.data.data)
       })
       .catch((err) => {
         console.log(err);
@@ -226,36 +228,66 @@ export default function RoomForm({ navigation, route }) {
     addRoomType();
   }
   const uploadFile = async () => {
-    let formData = new FormData();
-    for (var i = 0; i < allData.image.length; i++) {
-      // ImagePicker saves the taken photo to disk and returns a local URI to it
-      let localUri = allData.image[i].uri;
-      let filename = localUri.split("/").pop();
-      // Infer the type of the image
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[i]}` : `image`;
+    let base64List = [];
+    Promise.all(allData.image.map(image => {
+      return fetch(image.uri).then(response => response.blob())
+      .then(blob => {
+        let reader = new FileReader();
+        reader.readAsDataURL(blob);
+        return new Promise(resolve => {
+          reader.onload = function(event) {
+            console.log("eve " + event.target.result.substring(0, 20));
+            resolve(event.target.result);
+          }
+        });
+      })
+    }))
+    .then(results => {
+      let fd = new FormData();
+      results.forEach(base64String => {
+        console.log(base64String.substring(0,25))
+        fd.append("file", base64String);
+      });
+      // const re = await axios.post(
+      //       // `${mingUrl}/images/upload`,
+      //       'https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/images/upload',
+      //       fd, { headers: {'Content-Type': 'multipart/form-data'}}
+      //     );
+      //     console.log("result" , re.data)
+      return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: results}, { headers: {'Content-Type': 'application/json'}}).then(response => {
+        console.log(response.data)
+      })
+    })
+    Promise.all(allData.image.map(image => {
+      return fetch(image.uri).then(response => response.blob())
+      .then(blob => {
+        let reader = new FileReader();
+        reader.readAsDataURL(blob);
+        return new Promise(resolve => {
+          reader.onload = function(event) {
+            console.log("eve " + event.target.result.substring(0, 20));
+            resolve(event.target.result);
+          }
+        });
+      })
+    }))
+    .then(results => {
+      let fd = new FormData();
+      console.log(results.length)
+      results.forEach(base64String => {
+        console.log(base64String.substring(0,25))
+        fd.append("file", base64String);
+      });
+      return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: results}).then(response => {
+        console.log(response.data.data)
+        setImageUri(response.data.data)
+      })
+      .catch(err => {
+        console.log(err.message )
+      })
+    })
 
-
-      formData.append("files", { uri: localUri, name: filename, type });
-    }
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
     };
-    try {
-      const re = await axios.post(
-        `${baseUrl}/file/upload`,
-        formData,
-        config
-      );
-      setImageUri(re.data);
-      
-    } catch (err) {
-      console.log(err);
-    }
-
-  };
 
   const addRoomType = () => {
     let all = new room();
@@ -270,7 +302,7 @@ export default function RoomForm({ navigation, route }) {
     
     
     axios
-      .post(`${baseUrl}/room/add`, all)
+      .post(`${mingUrl}/room2/add`, all)
       .then((response) => {
         setVisible(false)
         Alert.alert(response.data, undefined, [

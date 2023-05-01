@@ -16,7 +16,7 @@ import {baseUrl} from "@env"
 const CheckRoomDetail = ({ route, navigation }) => {
   const width = Dimensions.get("window").width;
   const height = Dimensions.get("window").height;
-  const { id, editable } = route.params;
+  const id = route.params.id;
   const [data, setData] = useState();
   const [countRoom, setCountRoom] = useState(0);
 
@@ -24,14 +24,16 @@ const CheckRoomDetail = ({ route, navigation }) => {
   useFocusEffect(
     useCallback(() => {
       const getInfo = async () => {
+        console.log(id)
         await axios
-        .get(`${baseUrl}/room/getbyid`, {
+        .get(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/room2/getbyid`, {
           params: {
             id : id
         } })
         .then((response) => {
           // console.log(response.data);
-          setData(response.data);
+          setData(response.data.data.Item);
+          console.log("data "+ data)
         })
         .catch((err) => {
           console.log(err);
@@ -77,7 +79,6 @@ const CheckRoomDetail = ({ route, navigation }) => {
     countRentBytype()
   },[data])
   
-  
   return (
     <View style={{ flex: 1, backgroundColor: "#FDF8F4" }}>
       <HeaderBackground
@@ -112,7 +113,7 @@ const CheckRoomDetail = ({ route, navigation }) => {
         </View>
       )}
       <View style={{ flex: 2, marginTop: "10%" }}>
-        {editable && (
+        {/* {editable && ( */}
           <View
             style={{
               justifyContent: "flex-end",
@@ -126,9 +127,9 @@ const CheckRoomDetail = ({ route, navigation }) => {
               style={{ marginRight: 20 }}
               onPress={() => {
                 navigation.navigate("Edit type room", {
-                id: data._id
-              })
-                
+                id: data.room_id
+                })
+              
               }}
             >
               <Icon
@@ -139,7 +140,7 @@ const CheckRoomDetail = ({ route, navigation }) => {
             </TouchableOpacity>
 
           </View>
-        )}
+        {/* )} */}
         {data && (
           <View style={{ flex: 1, alignItems: "center", position: "relative" }}>
             <View
@@ -185,7 +186,7 @@ const CheckRoomDetail = ({ route, navigation }) => {
                 {
                   borderColor: data.bgColor,
                   marginTop: height / 10,
-                  marginBottom: editable ? 50 : 0,
+                  marginBottom:  50,
                 },
               ]}
             >

@@ -28,9 +28,8 @@ const RoomCard = (props) => {
         onPress={() =>{
           if(props.screen == "show room type"){
           props.navigation.navigate("CheckRoomDetail", {
-            id: props.data._id,
+            id: props.data.room_id,
             name: props.data.typeName,
-            editable: props.editable
           })}}
         }
       >
