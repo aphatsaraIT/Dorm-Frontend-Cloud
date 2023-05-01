@@ -34,6 +34,7 @@ function User({ userObject, navigation, contract, roomNumber, vehicle }) {
   const [room_number, setRoom_number] = useState(roomNumber);
   const [status, setStatus] = useState("moveOut");
   const [statusRoom, setStatusRoom] = useState("available");
+  // console.log(userObject)
 
   const addCar = async (event) => {
     try {
@@ -137,7 +138,7 @@ function User({ userObject, navigation, contract, roomNumber, vehicle }) {
               }
 
               const deleteUser = await axios.delete(
-                `${baseUrl}/deleteUser/${userObject._id}`
+                `https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/delete/${userObject.user_id}`
               );
 
               if (
@@ -1003,7 +1004,7 @@ const UserProfile = ({ route, navigation }) => {
   const [vehicle, setVehicle] = useState("");
 
   useEffect(() => {
-    const url = `${baseUrl}/getUserNum/${categoryTitle}`;
+    const url = `https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/getuserbyroomid/${categoryTitle}`;
 
     const urlContract = `https://tvybcy5mwe.execute-api.us-east-1.amazonaws.com/dev/getcontractnum/${categoryTitle}/rent`;
 
@@ -1019,9 +1020,11 @@ const UserProfile = ({ route, navigation }) => {
           contract.status === 200 &&
           vehicle.status === 200
         ) {
-          setUser(response.data);
-          setContract(contract.data.data);
-          setVehicle(vehicle.data.data);
+
+          setUser(response.data.data[0]);
+          setContract(contract.data[0]);
+          setVehicle(vehicle.data);
+
           // console.log(response.data);
           //console.log(contract.data[0]);
           //console.log(response.data);

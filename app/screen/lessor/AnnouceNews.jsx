@@ -11,13 +11,17 @@ const AnnouceNews = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      const url = `${baseUrl}/news`;
-
+      // const url = `${baseUrl}/news`;
+      const url = `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/get`;
       const fetchUsers = async () => {
         try {
           const response = await axios.get(url);
           if (response.status === 200) {
-            setNews(response.data);
+            // new with AWS
+            setNews(response.data.data);
+            console.log(response.data.data);
+            // old with java
+            // setNews(response.data);
             // console.log(response.data);
             return;
           } else {
@@ -65,7 +69,6 @@ const AnnouceNews = ({ navigation }) => {
           renderItem={renderGridItem}
           numColumns={1}
           navigation={navigation}
-        
         />
       </View>
     </View>

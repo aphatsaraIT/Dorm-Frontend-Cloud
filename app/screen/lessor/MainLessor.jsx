@@ -66,9 +66,10 @@ const MainLessor = ({ route, navigation }) => {
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}/countUser`)
+      // .get(`${baseUrl}/countUser`)
+      .get(`https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/get`)
       .then((response) => {
-        setCountUser(response.data);
+        setCountUser(response.data.count);
       })
       .catch((error) => console.log("error countUser"));
   });

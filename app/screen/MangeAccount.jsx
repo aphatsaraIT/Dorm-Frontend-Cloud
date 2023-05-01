@@ -16,7 +16,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 const MangeAccount = () => {
   const user = useSelector((state) => state.user);
-  const [id, setId] = React.useState(user._id);
+  const [id, setId] = React.useState(user.user_id);
   const [isEditable, setEditable] = useState(false);
   const [isUpdate, setUpdate] = useState(false);
   const [firstname, onChangeFirstname] = useState(user.first_name);
@@ -27,7 +27,8 @@ const MangeAccount = () => {
 
   useFocusEffect(
     useCallback(() => {
-      const url = `${baseUrl}/news`;
+      // const url = `${baseUrl}/news`;
+      const url = `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/get`;
 
       const fetchUsers = async () => {
         try {
@@ -50,7 +51,7 @@ const MangeAccount = () => {
   useEffect(() => {
     console.log("------\n", user);
     console.log("pass", user.password);
-    setId(user._id);
+    setId(user.user_id);
     console.log(id);
   }, [user]);
 
@@ -59,8 +60,9 @@ const MangeAccount = () => {
   };
 
   const submit = async () => {
-    const res = await axios.get(`${baseUrl}/getUserById/${id}`);
-    let record = { ...res.data };
+    // const res = await axios.get(`${baseUrl}/getUserById/${id}`);
+    const res = await axios.get(`https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/getuserbyid/${id}`);
+    let record = { ...res.data.data };
     record.first_name = firstname;
     record.last_name = lastname;
     record.address = address;
@@ -68,8 +70,9 @@ const MangeAccount = () => {
     record.tel_no2 = tel2;
 
     console.log("--------", record);
-    const res2 = await axios.post(`${baseUrl}/updateUser`, record);
-    console.log(res2.data);
+    // const res2 = await axios.post(`${baseUrl}/updateUser`, record);
+    const res2 = await axios.put(`https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/update`, record);
+    console.log(res2.data.data);
     if (res2.status === 200) {
       Alert.alert("แก้ไขสำเร็จ", undefined, [
         {

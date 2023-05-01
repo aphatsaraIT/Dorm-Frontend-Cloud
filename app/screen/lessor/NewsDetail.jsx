@@ -25,13 +25,13 @@ const NewsDetail = ({ route, navigation }) => {
 
   class news {
     constructor() {
-      this._id = id;
+      this.news_id = id;
       this.title = "";
       this.text = "";
       this.created_date = "";
       this.created_byId = null;
     }
-    id;
+    news_id;
     title;
     text;
     created_date;
@@ -39,13 +39,13 @@ const NewsDetail = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    setId(data._id);
+    setId(data.news_id);
     // console.log(id);
   }, [data]);
   useEffect(() => {
-    setImage(data.url)
-    setEditImage(data.url)
-  }, [id])
+    setImage(data.url);
+    setEditImage(data.url);
+  }, [id]);
 
   const uploadFile = async () => {
     let formData = new FormData();
@@ -78,9 +78,7 @@ const NewsDetail = ({ route, navigation }) => {
     // record.text = text;
     // record.created_date = created_date;
     // record.created_byId = created_byId;
-    let existedImage = [...editImage].filter(
-      (image) => image.uri == undefined
-    );
+    let existedImage = [...editImage].filter((image) => image.uri == undefined);
     let unexistedImage = [...editImage].filter(
       (image) => image.uri != undefined
     );
@@ -108,13 +106,18 @@ const NewsDetail = ({ route, navigation }) => {
         re = await axios.post(`${baseUrl}/file/upload`, formData, config);
       }
       let newArr = existedImage.concat(re.data);
-      newArr = newArr.filter((item) => item != undefined && item != null)
+      newArr = newArr.filter((item) => item != undefined && item != null);
       let record = { ...data };
       record.title = title;
       record.text = text;
-      record.url = newArr
-      console.log(record)
-      const res = await axios.post(`${baseUrl}/updateNews`, record);
+      record.url = newArr;
+      console.log(record);
+
+      // const res = await axios.post(`${baseUrl}/updateNews`, record);
+      const res = await axios.put(
+        `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/update`,
+        record
+      );
       Alert.alert("แก้ไขสำเร็จ", undefined, [
         {
           text: "ปิด",
@@ -132,7 +135,7 @@ const NewsDetail = ({ route, navigation }) => {
 
   const Delete = async () => {
     let record = new news();
-    record._id = id;
+    record.news_id = id;
     record.title = title;
     record.text = text;
     record.created_date = created_date;
@@ -140,7 +143,10 @@ const NewsDetail = ({ route, navigation }) => {
 
     console.log(record);
 
-    const res = await axios.post(`${baseUrl}/deleteNews`, record);
+    // const res = await axios.post(`${baseUrl}/deleteNews`, record);
+    const res = await axios.delete(
+      `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/delete/${record.news_id}`
+    );
     Alert.alert("ลบสำเร็จ", undefined, [
       {
         text: "ปิด",
@@ -162,11 +168,11 @@ const NewsDetail = ({ route, navigation }) => {
     });
 
     if (!result.cancelled) {
-      console.log(result)
+      console.log(result);
       let list = [...image];
       list.push(result);
       setEditImage(list);
-      console.log(list)
+      console.log(list);
     }
   };
   const sendImgForEdit = async () => {
@@ -178,7 +184,7 @@ const NewsDetail = ({ route, navigation }) => {
     });
 
     if (!result.cancelled) {
-      console.log(result)
+      console.log(result);
       let list = [...image];
       list.unshift(result);
       setEditImage(list);
@@ -276,35 +282,39 @@ const NewsDetail = ({ route, navigation }) => {
             value={text}
             onChangeText={setText}
           />
-          {editImage != null && editImage.map((img, index) => (
-            <View style={{ position: "relative" }}>
-              {img.uri == undefined && (
-                <Image source={{ uri: img }} style={[styles.image]}></Image>
-              )}
-              {img.uri != undefined && (
-                <Image source={{ uri: img.uri }} style={[styles.image]}></Image>
-              )}
-              <Icon
-                fill="#EC1212"
-                style={{
-                  width: 30,
-                  height: 30,
-                  right: 35,
-                  top: -175,
-                  position: "absolute",
-                  zIndex: 1,
-                }}
-                name="plus-circle"
-                onPress={() => {
-                  let newArr = [...editImage]
-                  console.log(newArr)
-                  console.log(index)
-                  newArr.splice(index, 1)
-                  setEditImage(newArr)
-                }}
-              ></Icon>
-            </View>
-          ))}
+          {editImage != null &&
+            editImage.map((img, index) => (
+              <View style={{ position: "relative" }}>
+                {img.uri == undefined && (
+                  <Image source={{ uri: img }} style={[styles.image]}></Image>
+                )}
+                {img.uri != undefined && (
+                  <Image
+                    source={{ uri: img.uri }}
+                    style={[styles.image]}
+                  ></Image>
+                )}
+                <Icon
+                  fill="#EC1212"
+                  style={{
+                    width: 30,
+                    height: 30,
+                    right: 35,
+                    top: -175,
+                    position: "absolute",
+                    zIndex: 1,
+                  }}
+                  name="plus-circle"
+                  onPress={() => {
+                    let newArr = [...editImage];
+                    console.log(newArr);
+                    console.log(index);
+                    newArr.splice(index, 1);
+                    setEditImage(newArr);
+                  }}
+                ></Icon>
+              </View>
+            ))}
           <View style={[styles.footerContainer, { marginVertical: 3 }]}>
             <Icon
               fill="#EC1212"
@@ -389,7 +399,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    alignItems: "center"
+    alignItems: "center",
   },
   footerControl: {
     marginHorizontal: 2,

@@ -18,7 +18,7 @@ const news = ({ item, width, numberOfLines, canEdit, onSelect, navigation}) => {
   const data  = item.item;
   const [visible, setVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [id, setId] = useState(data._id);
+  const [id, setId] = useState(data.news_id);
   const [text, setText] = useState(data.text);
   const [title, setTitle] = useState(data.title);
   const [created_date, setCreated_date] = useState(data.created_date);
@@ -27,7 +27,7 @@ const news = ({ item, width, numberOfLines, canEdit, onSelect, navigation}) => {
 
   class news {
     constructor() {
-      this._id = id;
+      this.news_id = id;
       this.title = "";
       this.text = "";
       this.created_date = "";
@@ -41,7 +41,7 @@ const news = ({ item, width, numberOfLines, canEdit, onSelect, navigation}) => {
   }
 // console.log("HI",data)
   useEffect(() => {
-    setId(data._id);
+    setId(data.news_id);
     // console.log(id);
   }, [data]);
 
@@ -70,13 +70,14 @@ const news = ({ item, width, numberOfLines, canEdit, onSelect, navigation}) => {
 
   const Edited = async () => {
     let record = new news();
-    record._id = id;
+    record.news_id = id;
     record.title = title;
     record.text = text;
     record.created_date = created_date;
     record.created_byId = created_byId;
 
-    const res = await axios.post(`${baseUrl}/updateNews`, record);
+    // const res = await axios.post(`${baseUrl}/updateNews`, record);
+    const res = await axios.put(`https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/update`, record);
     Alert.alert("แก้ไขสำเร็จ", undefined, [
       {
         text: "ปิด",
@@ -106,15 +107,17 @@ const news = ({ item, width, numberOfLines, canEdit, onSelect, navigation}) => {
 
   const Delete = async () => {
     let record = new news();
-    record._id = id;
+    record.news_id = id;
     record.title = title;
     record.text = text;
     record.created_date = created_date;
     record.created_byId = created_byId;
 
-    console.log(record);
+    // console.log("กรี้ดดดดดดดด",record.news_id);
 
-    const res = await axios.post(`${baseUrl}/deleteNews`, record);
+    // const res = await axios.post(`${baseUrl}/deleteNews`, record);
+
+    const res = await axios.delete(`https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/delete/${record.news_id}`);
     Alert.alert("ลบสำเร็จ", undefined, [
       {
         text: "ปิด",
