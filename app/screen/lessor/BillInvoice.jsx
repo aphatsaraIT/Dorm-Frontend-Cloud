@@ -56,8 +56,8 @@ const BillInvoice = ({ route, navigation }, props) => {
     const urlUser = `${baseUrl}/getUserNum/${categoryTitle}`;
     const urlRoomInvoice = `${baseUrl}/getInvoice/${categoryTitle}/${month}/${year}`;
     const urlRentPrice = `${baseUrl}/getRoomNum/${categoryTitle}`;
-    const urlWaterMeter =`${baseUrl}/meter/getMeterInvoice/${categoryTitle}/water/${month} ${year}`;
-    const urlElecMeter =`${baseUrl}/meter/getMeterInvoice/${categoryTitle}/electricity/${month} ${year}`;
+    const urlWaterMeter =`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getmeterinvoice/${categoryTitle}/water/${month} ${year}`;
+    const urlElecMeter =`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getmeterinvoice/${categoryTitle}/electricity/${month} ${year}`;
 
     const fetchUsers = async () => {
       try {
@@ -74,12 +74,12 @@ const BillInvoice = ({ route, navigation }, props) => {
               setUser(resUser.data);
               setRoomInvoice(resInvoice.data);
               setRentPrice(resRentPrice.data);
-              setElectricity(resElectric.data);
-              setWater(resWater.data);
+              setElectricity(resElectric.data.data);
+              setWater(resWater.data.data);
 
               console.log(resRentPrice.data);
-              console.log(resElectric.data);
-              console.log(resWater.data);
+              // console.log(resElectric.data);
+              // console.log(resWater.data);
 
           if(resElectric.data === "" || resWater.data === ""){
             

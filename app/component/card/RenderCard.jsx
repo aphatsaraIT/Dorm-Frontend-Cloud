@@ -5,6 +5,7 @@ import { Input, Text, Card, Avatar, Divider } from "@ui-kitten/components";
 import { useState } from "react";
 
 const RenderCard = (props) => {
+  console.log("page "+props.item.topic)
   const [commentInput, setCommentInput] = useState("");
   const [widthOfView, setWidthOfView] = useState(0);
   return (

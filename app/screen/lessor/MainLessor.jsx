@@ -48,6 +48,7 @@ const MainLessor = ({ route, navigation }) => {
       setMonthandyear(currentMonth + " " + currentYear);
     };
     formatedDate(dateCurrent);
+    console.log(monthandyear)
   });
  
   const [countUser, setCountUser] = useState(0);
@@ -95,19 +96,20 @@ const MainLessor = ({ route, navigation }) => {
   });
 
   useEffect(() => {
+    console.log(typeWater)
     axios
-      .get(`${baseUrl}/meter/countPayMeter/${monthandyear}/${typeWater}`)
+      .get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/countpaymeter/${monthandyear}/${typeWater}`)
       .then((response) => {
-        setCountUseWater(response.data.toFixed(2));
+        setCountUseWater(response.data.data.toFixed(2));
       })
       .catch((error) => console.log("error countUseWater"));
   });
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}/meter/countPayMeter/${monthandyear}/${typeElec}`)
+      .get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/countpaymeter/${monthandyear}/${typeElec}`)
       .then((response) => {
-        setCountUseElec(response.data.toFixed(2));
+        setCountUseElec(response.data.data.toFixed(2));
       })
       .catch((error) => console.log("error countUseElec"));
   });

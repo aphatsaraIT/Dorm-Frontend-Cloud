@@ -11,18 +11,21 @@ import React from "react";
 import axios from "axios";
 import { Toggle, Button, Text, Icon } from "@ui-kitten/components";
 import { useFocusEffect } from "@react-navigation/native";
-import {baseUrl} from "@env"
+import {baseUrl, mingUrl} from "@env"
 const CheckRoomPrice = ({ route, navigation }) => {
   const [ROOMS, setROOMS] = useState([]);
   useFocusEffect(
     useCallback(() => {
+      console.log(`${mingUrl}/room2/getall`)
       axios
-        .get(`${baseUrl}/room/getall`)
+        .get(`${mingUrl}/room2/getall`)
           .then((response) => {
             // console.log(response.data)
-          setROOMS(response.data);
+          console.log(response.data.data.Items)
+          setROOMS(response.data.data.Items);
         })
         .catch((err) => {
+          console.log("eiei")
           console.log(err);
         });
     }, []),
@@ -42,10 +45,10 @@ const CheckRoomPrice = ({ route, navigation }) => {
           marginTop: 10,
         }}
       >
-        <Text category="label" style={{ marginRight: 10, color: "gray" }}>
+        {/* <Text category="label" style={{ marginRight: 10, color: "gray" }}>
           Add New Type And Edit Imforation
-        </Text>
-        {checkedEditable && (
+        </Text> */}
+        {/* {checkedEditable && (
           <Toggle
             checked={checkedEditable}
             onChange={(isChecked) => setCheckedEditable(isChecked)}
@@ -57,18 +60,18 @@ const CheckRoomPrice = ({ route, navigation }) => {
             checked={checkedEditable}
             onChange={(isChecked) => setCheckedEditable(isChecked)}
           ></Toggle>
-        )}
+        )} */}
       </View>
       <ScrollView style={{ flex: 1, backgroundColor: "#FDF8F4" }}>
         <View>
           {ROOMS.map((item, index) => (
                     <View key={index} style={{ width:'100%',alignItems:'center'}} >
-              <RoomCard data={item} navigation={navigation} editable={checkedEditable} screen={"show room type"} /> 
+              <RoomCard data={item} navigation={navigation} screen={"show room type"} /> 
                     </View>
                 ))}
         </View>
       </ScrollView>
-      {checkedEditable && (
+      {/* {checkedEditable && ( */}
         <View style={styles.addBtnContainer}>
           <TouchableOpacity
             style={styles.addBtn}
@@ -81,7 +84,7 @@ const CheckRoomPrice = ({ route, navigation }) => {
             ></Icon>
           </TouchableOpacity>
         </View>
-      )}
+      {/* )} */}
     </View>
   );
 };

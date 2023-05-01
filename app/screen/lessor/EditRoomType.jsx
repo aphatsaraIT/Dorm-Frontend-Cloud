@@ -7,13 +7,12 @@ const EditRoomType = ({ route, navigation }) => {
     const { id } = route.params;
     useEffect(() => {
         axios
-        .get(`${baseUrl}/room/getbyid`, {
+        .get(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/room2/getbyid`, {
           params: {
             id : id
         } })
         .then((response) => {
-          console.log(response.data);
-          setData(response.data);
+          setData(response.data.data.Item);
         })
         .catch((err) => {
           console.log(err);

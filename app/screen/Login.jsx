@@ -28,7 +28,7 @@ const  Login = (props) => {
   const [password, setPassword] = useState(null);
 
   const comFirmLogin = async () => {
-    console.log("log in2")
+    console.log("log in")
     console.log(baseUrl + "/login")
     setUsername(username);
     setPassword(password);
