@@ -47,13 +47,14 @@ const MainTenant = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    const url = `${baseUrl}/news`;
+    // const url = `${baseUrl}/news`;
+    const url = `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/get`;
     const fetchUsers = async () => {
       try {
         const response = await axios.get(url);
         if (response.status === 200) {
-          setNews(response.data);
-          // console.log(response.data);
+          setNews(response.data.data);
+          console.log(response.data.data);
           return;
         } else {
           throw new Error("Failed");

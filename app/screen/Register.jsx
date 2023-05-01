@@ -79,8 +79,9 @@ const Register = ({ route, navigation }) => {
     record.role = role;
 
     console.log(record);
-    const res = await axios.post(`${baseUrl}/addUser`, record);
-    if (res.data === false) {
+    // const res = await axios.put(`${baseUrl}/addUser`, record);
+    const res = await axios.put(`https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/add`, record);
+    if (res.data.message === "Failed") {
       Alert.alert("username นี้ถูกใช้ไปแล้ว", undefined, [
         {
           text: "ปิด",
@@ -91,7 +92,7 @@ const Register = ({ route, navigation }) => {
           },
         },
       ]);
-    } else if (res.data === true) {
+    } else if (res.data.message === "Successfully") {
       Alert.alert("ลงทะเบียนสำเร็จ", undefined, [
         {
           text: "ปิด",

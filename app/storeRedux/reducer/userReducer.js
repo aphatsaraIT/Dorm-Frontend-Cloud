@@ -2,7 +2,7 @@
 import { SET_USER } from "../action/userAction";
 
 const initialState = {
-    _id:"",
+    user_id:"",
     username:"",
     password:"",
     first_name:"",

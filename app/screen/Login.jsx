@@ -28,19 +28,23 @@ const  Login = (props) => {
   const [password, setPassword] = useState(null);
 
   const comFirmLogin = async () => {
-    console.log("log in2")
-    console.log(baseUrl + "/login")
+    // console.log("log in2")
+    // console.log(baseUrl + "/login")
     setUsername(username);
     setPassword(password);
+    console.log(username+" "+password)
     try {
-      const result = await axios.get(baseUrl + "/login", {
-        params: {
-          username,
-          password,
-        },
+      const result = await axios.get( `https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/login/${username}/${password}`, {
+
       });
-      console.log(result.data)
-      if (!result.data) {
+      // const result = await axios.get(baseUrl + "/login", {
+      //   params: {
+      //     username,
+      //     password,
+      //   },
+      // });
+      // console.log(result.data.data)
+      if (!result.data.data) {
         console.log("Login ไม่สำเร็จ")
         Alert.alert("Login ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", undefined, [
           {
@@ -49,8 +53,8 @@ const  Login = (props) => {
             },
           },
         ]);
-      } else if (result.data) {
-        console.log("------------\nLogin!\n------------\n", result.data,"\n-----------------------------------")
+      } else if (result.data.data) {
+        console.log("------------\nLogin!\n------------\n", result.data.data,"\n-----------------------------------")
         Alert.alert("Login สำเร็จ", undefined, [
           {
             text: "ปิด",
@@ -58,8 +62,9 @@ const  Login = (props) => {
             },
           },
         ]);
-        props.setUserFromApp(result.data);
-        dispatch(setUser({ ...result.data }));
+        props.setUserFromApp(result.data.data[0]);
+        console.log(result.data.data[0])
+        dispatch(setUser({ ...result.data.data[0] }));
       }
     } catch (e) {
       console.log(e);

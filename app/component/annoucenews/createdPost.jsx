@@ -61,38 +61,37 @@ const CreatedPost = () => {
       },
     };
     try {
-      const re = await axios.post(
-        `${baseUrl}/file/upload`,
-        formData,
-        config
-      );
+      const re = await axios.post(`${baseUrl}/file/upload`, formData, config);
       let imageUrl = re.data;
       let record = new news();
-        record.title = title;
-        record.text = text;
-        record.created_date = created_date;
-        record.created_byId = 1;
-        record.url = imageUrl
+      record.title = title;
+      record.text = text;
+      record.created_date = created_date;
+      record.created_byId = 1;
+      record.url = imageUrl;
 
-        const res = await axios.post(`${baseUrl}/addNews`, record);
-                Alert.alert(res.data, undefined, [
-                  {
-                    text: "Yes",
-                    onPress: () => {
-                      setTitle("");
-                      setText("");
-                      setVisible(false);
-                    },
-                  },
-                ]);
-      
+      // const res = await axios.post(`${baseUrl}/addNews`, record);
+
+      const res = await axios.put(
+        `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/add`,
+        record
+      );
+      Alert.alert(res.data.data, undefined, [
+        {
+          text: "Yes",
+          onPress: () => {
+            setTitle("");
+            setText("");
+            setVisible(false);
+          },
+        },
+      ]);
     } catch (err) {
       console.log(err);
     }
   };
 
   const sendImg = async () => {
-  
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
@@ -291,7 +290,7 @@ const CreatedPost = () => {
                   )}
                   <Icon
                     fill="#EC1212"
-                    style={{ width: 30, height: 30, left:-20, top:-15 }}
+                    style={{ width: 30, height: 30, left: -20, top: -15 }}
                     name="close-circle-outline"
                     onPress={() => deleteImage(index)}
                   ></Icon>
