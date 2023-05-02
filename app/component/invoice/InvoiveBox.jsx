@@ -14,6 +14,7 @@ const InvoiceBox = (props) => {
   //   let get = INVOICE.filter((item) => item.id == id)[0];
   //   setData(get);
   // }, [id]);
+  console.log('invoice----------------------')
  console.log(props.data.total)
   return (
     <View style={styles.container}>

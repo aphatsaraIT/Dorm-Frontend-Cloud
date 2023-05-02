@@ -268,6 +268,7 @@ export default function RoomForm({ navigation, route }) {
     all.suggestion = allData.suggestion
     all.typeName = allData.typeName
     
+
     console.log("check..")
     await axios
       .post(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/room2/add`, all)

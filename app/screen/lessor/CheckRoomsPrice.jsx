@@ -16,7 +16,6 @@ const CheckRoomPrice = ({ route, navigation }) => {
   const [ROOMS, setROOMS] = useState([]);
   useFocusEffect(
     useCallback(() => {
-      console.log(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/room2/getall`)
       axios
         .get(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/room2/getall`)
           .then((response) => {
