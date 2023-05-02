@@ -46,6 +46,7 @@ const NewsDetail = ({ route, navigation }) => {
     setImage(data.url);
     setEditImage(data.url);
   }, [id]);
+  console.log(image)
 
   const uploadFile = async () => {
     let formData = new FormData();
@@ -82,55 +83,82 @@ const NewsDetail = ({ route, navigation }) => {
     let unexistedImage = [...editImage].filter(
       (image) => image.uri != undefined
     );
+    console.log(unexistedImage)
+    Promise.all(unexistedImage.map(img => {
+      return fetch(img.uri).then(response => response.blob())
+        .then(blob => {
+          let reader = new FileReader();
+          reader.readAsDataURL(blob);
+          return new Promise(resolve => {
+            reader.onload = function(event) {
+              // console.log("eve " + event.target.result.substring(0, 20));
+              resolve(event.target.result);
+            }
+          });
+        })
+    })).then(base64 => {
+      console.log(base64)
+      return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: base64}).then(response => {
+        // console.log("listImg "+response.data.data);
+        // return response.data.data;
+        let newArr = existedImage.concat(response.data.data);
+        newArr = newArr.filter((item) => item != undefined && item != null);
+        let record = { ...data };
+        record.title = title;
+        record.text = text;
+        record.url = newArr;
+        console.log(record);
 
-    let formData = new FormData();
-    for (var i = 0; i < unexistedImage.length; i++) {
-      // ImagePicker saves the taken photo to disk and returns a local URI to it
-      let localUri = unexistedImage[i].uri;
-      let filename = localUri.split("/").pop();
-      // Infer the type of the image
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[i]}` : `image`;
-
-      formData.append("files", { uri: localUri, name: filename, type });
-    }
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
-
-    try {
-      let re = [];
-      if (unexistedImage.length > 0) {
-        re = await axios.post(`${baseUrl}/file/upload`, formData, config);
-      }
-      let newArr = existedImage.concat(re.data);
-      newArr = newArr.filter((item) => item != undefined && item != null);
-      let record = { ...data };
-      record.title = title;
-      record.text = text;
-      record.url = newArr;
-      console.log(record);
-
-      // const res = await axios.post(`${baseUrl}/updateNews`, record);
-      const res = await axios.put(
-        `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/update`,
-        record
-      );
-      Alert.alert("แก้ไขสำเร็จ", undefined, [
-        {
-          text: "ปิด",
-          onPress: () => {
-            setTitle(title);
-            setText(text);
-            navigation.navigate("AnnouceNews");
+        const res = axios.put(
+          `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/update`,
+          record
+        );
+        Alert.alert("แก้ไขสำเร็จ", undefined, [
+          {
+            text: "ปิด",
+            onPress: () => {
+              setTitle(title);
+              setText(text);
+              navigation.navigate("AnnouceNews");
+            },
           },
-        },
-      ]);
-    } catch (err) {
-      console.log(err);
-    }
+        ]);
+      
+      });
+    });
+
+
+    // try {
+    //   let re = [];
+    //   if (unexistedImage.length > 0) {
+    //     re = await axios.post(`${baseUrl}/file/upload`, formData, config);
+    //   }
+    //   let newArr = existedImage.concat(re.data);
+    //   newArr = newArr.filter((item) => item != undefined && item != null);
+    //   let record = { ...data };
+    //   record.title = title;
+    //   record.text = text;
+    //   record.url = newArr;
+    //   console.log(record);
+
+    //   // const res = await axios.post(`${baseUrl}/updateNews`, record);
+    //   const res = await axios.put(
+    //     `https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/update`,
+    //     record
+    //   );
+    //   Alert.alert("แก้ไขสำเร็จ", undefined, [
+    //     {
+    //       text: "ปิด",
+    //       onPress: () => {
+    //         setTitle(title);
+    //         setText(text);
+    //         navigation.navigate("AnnouceNews");
+    //       },
+    //     },
+    //   ]);
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   const Delete = async () => {
@@ -182,12 +210,22 @@ const NewsDetail = ({ route, navigation }) => {
       //   aspect: [4, 3],
       quality: 1,
     });
-
-    if (!result.cancelled) {
+    console.log('img')
+    console.log(image)
+    if (!result.cancelled && image != 'underfined') {
+      console.log('result2---')
       console.log(result);
       let list = [...image];
       list.unshift(result);
       setEditImage(list);
+    }else if(!result.cancelled && image == 'underfined'){
+      console.log(result)
+        const list = [...image];
+        list.unshift(result);
+        setEditImage(list);
+        console.log('test----')
+        console.log(list)
+        console.log('test----')
     }
   };
 

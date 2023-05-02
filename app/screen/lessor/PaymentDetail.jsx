@@ -42,6 +42,7 @@ const PaymentDatail = ({ route, navigation }) => {
   const [input, setInput] = useState("");
 
   const [fix, setFix] = useState(false);
+  
 
   const showDialog = () => {
     setVisible(true);
@@ -96,7 +97,7 @@ const PaymentDatail = ({ route, navigation }) => {
                 payment_time: payment_time,
                 payment_note: payment_note,
                 idInvoice: idInvoice,
-                url: uri,
+                url: uri[0],
                 room_number: room_number,
                 payment_status: "checked",
               });
@@ -158,7 +159,7 @@ const PaymentDatail = ({ route, navigation }) => {
         payment_time: payment_time,
         payment_note: payment_note + " [ " + input + " ]",
         idInvoice: idInvoice,
-        url: uri,
+        url: uri[0],
         room_number: room_number,
         payment_status: "checked",
       });
@@ -239,7 +240,7 @@ const PaymentDatail = ({ route, navigation }) => {
               สลิปโอนเงิน :{" "}
             </Text>
                         <Image
-                        source={{ width: 240, height: 240,  uri: uri }}
+                        source={{ width: 240, height: 240,  uri: uri[0] }}
                         style={{borderRadius: 10}}
                         resizeMode="cover"
                       />
