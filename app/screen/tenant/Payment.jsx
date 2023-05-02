@@ -58,12 +58,55 @@ const Payment = ({ route, navigation }) => {
     });
 
     if (!result.cancelled) {
-      let list = [...image];
+      const list = [...image];
       list.unshift(result);
       setShowSlip(false);
       setImage(list);
+      console.log('test----')
       console.log(list)
+      console.log('test----')
+    // let unexistedImage = list.filter(
+    //   (img) => img.uri != undefined
+    // );
+    // console.log(list)
+    // Promise.all(unexistedImage.map(img => {
+    //   return fetch(img.uri).then(response => response.blob())
+    //     .then(blob => {
+    //       let reader = new FileReader();
+    //       reader.readAsDataURL(blob);
+    //       return new Promise(resolve => {
+    //         reader.onload = function(event) {
+    //           // console.log("eve " + event.target.result.substring(0, 20));
+    //           resolve(event.target.result);
+    //         }
+    //       });
+    //     })
+    // })).then(base64 => {
+    //   console.log(base64)
+    //   return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: base64}).then(response => {
+    //     // console.log("listImg "+response.data.data);
+    //     // return response.data.data;
+    //     setUrlImg(response.data.data)
+    //   console.log(response.data.data);
+    //   // const res = await axios.post(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/addpayment`, {
+    //   //   payment_date : date,
+    //   //   payment_time : time,
+    //   //   payment_note : note,
+    //   //   idInvoice : id,
+    //   //   url : response.data.data,
+    //   //   amount : totalPay,
+    //   //   room_number : categoryTitle,
+    //   //   payment_status : statusPay
+    //   // });
+    //   // setLoading(false);
+    //   // alert('ส่งสลีปเรียบร้อย')
+    //   // navigation.navigate("InvoiceDetail", {  id:  id,
+    //   // categoryTitle:  categoryTitle, month: month, year: year});
+    //   });
+    // });
     }
+    
+
   };
   const deleteImage = (index) => {
     let list = [...image];
@@ -81,32 +124,38 @@ if (h > 1000) {
   const sendReport = async () => {
     if (image.length > 0 && totalPay != ""){
         setLoading(true);
-        let formData = new FormData();
-        for (var i = 0; i < image.length; i++) {
-          // ImagePicker saves the taken photo to disk and returns a local URI to it
-          let localUri = image[i].uri;
-          let filename = localUri.split("/").pop();
-          // Infer the type of the image
-          let match = /\.(\w+)$/.exec(filename);
-          let type = match ? `image/${match[i]}` : `image`;
-
-          formData.append("files", { uri: localUri, name: filename, type });
-        }
-        const config = {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        };
-        try {
-          const re = await axios.post(`${baseUrl}/file/upload`, formData, config);
-          setUrlImg(re.data)
-          console.log(re.data);
-          const res = await axios.post(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/addpayment`, {
+        const list = [...image];
+        
+        console.log(list)
+        let unexistedImage = list.filter(
+          (img) => img.uri != undefined
+        );
+        console.log(unexistedImage)
+        Promise.all(unexistedImage.map(img => {
+          return fetch(img.uri).then(response => response.blob())
+            .then(blob => {
+              let reader = new FileReader();
+              reader.readAsDataURL(blob);
+              return new Promise(resolve => {
+                reader.onload = function(event) {
+                  // console.log("eve " + event.target.result.substring(0, 20));
+                  resolve(event.target.result);
+                }
+              });
+            })
+        })).then(base64 => {
+          console.log(base64)
+          return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: base64}).then(response => {
+            // console.log("listImg "+response.data.data);
+            // return response.data.data;
+            setUrlImg(response.data.data)
+          console.log(response.data.data);
+          const res = axios.post(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/addpayment`, {
             payment_date : date,
             payment_time : time,
             payment_note : note,
             idInvoice : id,
-            url : re.data[0],
+            url : response.data.data,
             amount : totalPay,
             room_number : categoryTitle,
             payment_status : statusPay
@@ -115,9 +164,30 @@ if (h > 1000) {
           alert('ส่งสลีปเรียบร้อย')
           navigation.navigate("InvoiceDetail", {  id:  id,
           categoryTitle:  categoryTitle, month: month, year: year});
-        } catch (err) {
-          console.log(err);
-        }
+          });
+        });
+
+        // try {
+        //   const re = await axios.post(`${baseUrl}/file/upload`, formData, config);
+        //   setUrlImg(re.data)
+        //   console.log(re.data);
+        //   const res = await axios.post(`https://s5qcfq9sp0.execute-api.us-east-1.amazonaws.com/dev/payment/addpayment`, {
+        //     payment_date : date,
+        //     payment_time : time,
+        //     payment_note : note,
+        //     idInvoice : id,
+        //     url : re.data[0],
+        //     amount : totalPay,
+        //     room_number : categoryTitle,
+        //     payment_status : statusPay
+        //   });
+        //   setLoading(false);
+        //   alert('ส่งสลีปเรียบร้อย')
+        //   navigation.navigate("InvoiceDetail", {  id:  id,
+        //   categoryTitle:  categoryTitle, month: month, year: year});
+        // } catch (err) {
+        //   console.log(err);
+        // }
 
     try {
       const response = await axios.put(`https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/updatestatus-invoice/${id}/${statusPay}`);
