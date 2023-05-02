@@ -26,59 +26,7 @@ const RoomFormEdit = ({ navigation, route, data }) => {
   }, [data]);
 
   const uploadFile = async () => {
-    // let existedImage = [...allData.image].filter(
-    //   (image) => image.uri == undefined
-    // );
-    // let unexistedImage = [...allData.image].filter(
-    //   (image) => image.uri != undefined
-    // );
-
-    // let formData = new FormData();
-    // for (var i = 0; i < unexistedImage.length; i++) {
-    //   // ImagePicker saves the taken photo to disk and returns a local URI to it
-    //   let localUri = unexistedImage[i].uri;
-    //   let filename = localUri.split("/").pop();
-    //   // Infer the type of the image
-    //   let match = /\.(\w+)$/.exec(filename);
-    //   let type = match ? `image/${match[i]}` : `image`;
-
-    //   formData.append("files", { uri: localUri, name: filename, type });
-    // }
-    // const config = {
-    //   headers: {
-    //     "content-type": "multipart/form-data",
-    //   },
-    // };
-    // try {
-    //   let re = [];
-    //   if (unexistedImage.length > 0) {
-    //     re = await axios.post(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/images/upload`, formData, config);
-    //   }
-    //     let newArr = existedImage.concat(re.data);
-        
-    //   let all = { ...allData };
-    //   all.image = newArr.filter(
-    //     (image) => image != undefined
-    //   );
-    //   console.log(all.image);
-    //   axios
-    //     .put(`${baseUrl}/room/update`, all)
-    //     .then((response) => {
-    //       setVisible(false);
-    //       Alert.alert(response.data, undefined, [
-    //         {
-    //           text: "OK",
-    //           onPress: () => navigation.goBack(),
-    //         },
-    //       ]);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // } catch (err) {
-    //   console.log(err);
-    // }
-      let existedImage = [...allData.image].filter(
+     let existedImage = [...allData.image].filter(
         (image) => image.uri == undefined
       );
       let unexistedImage = [...allData.image].filter(
@@ -98,23 +46,28 @@ const RoomFormEdit = ({ navigation, route, data }) => {
         })
       }))
       .then(results => {
-        let fd = new FormData();
-        console.log(results.length)
-        results.forEach(base64String => {
-          console.log(base64String.substring(0,25))
-          fd.append("file", base64String);
-        });
-        // const re = await axios.post(
-        //       // `${mingUrl}/images/upload`,
-        //       'https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/images/upload',
-        //       fd, { headers: {'Content-Type': 'multipart/form-data'}}
-        //     );
-        //     console.log("result" , re.data)
         return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: results}).then(response => {
-          console.log(response.data)
+          console.log("listImg "+response.data.data)
+          let newArr = existedImage.concat(response.data.data);
+          let all = { ...allData };
+        all.image = newArr.filter(
+        (image) => image != undefined);
+      axios
+        .put(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/room2/update`, all)
+        .then((response) => {
+          setVisible(false);
+          Alert.alert(response.data.message, undefined, [
+            {
+              text: "OK",
+              onPress: () => navigation.goBack(),
+            },
+          ]);
+        }).catch(err=>{
+          console.log("update room "+err.message )
+        })
         })
         .catch(err => {
-          console.log(err.message )
+          console.log("upload image "+err.message )
         })
       })
   };
