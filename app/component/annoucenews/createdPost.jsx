@@ -44,51 +44,75 @@ const CreatedPost = () => {
   }, []);
 
   const Created = async () => {
-    try {
-      let unexistedImage = [image].filter(
+    // try {
+      let unexistedImage = image.filter(
         (img) => img.uri != undefined
       );
-      const imageUrls = await Promise.all(unexistedImage.map(img => {
+      Promise.all(unexistedImage.map(img => {
         return fetch(img.uri).then(response => response.blob())
           .then(blob => {
             let reader = new FileReader();
             reader.readAsDataURL(blob);
             return new Promise(resolve => {
               reader.onload = function(event) {
-                console.log("eve " + event.target.result.substring(0, 20));
+                // console.log("eve " + event.target.result.substring(0, 20));
                 resolve(event.target.result);
               }
             });
-          }).then(base64 => {
-            console.log("bese64 "+base64.substring(0, 30))
-            return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: base64}).then(response => {
-              console.log("listImg "+response.data.data);
-              return response.data.data;
-            });
-          });
-      }));
-  
-      let record = new news();
-      record.title = title;
-      record.text = text;
-      record.created_date = created_date;
-      record.created_byId = 1;
-      record.url = imageUrls[0]; // Assuming there's only one image
-      const res = await axios.put(`https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/add`,record);
-      Alert.alert(res.data.message, undefined, [
-        {
-          text: "Yes",
-          onPress: () => {
-            setTitle("");
-            setText("");
-            setVisible(false);
-          },
-        },
-      ]);
-    } catch (err) {
-      console.log("error "+err.message )
-    }
+          })
+      })).then(base64 => {
+        console.log(base64)
+        return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: base64}).then(response => {
+          // console.log("listImg "+response.data.data);
+          // return response.data.data;
+          let record = new news();
+          record.title = title;
+          record.text = text;
+          record.created_date = created_date;
+          record.created_byId = 1;
+          record.url = response.data.data; // Assuming there's only one image
+          // const res = await axios.put(`https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/add`,record);
+          // Alert.alert(res.data.message, undefined, [
+          //   {
+          //     text: "Yes",
+          //     onPress: () => {
+          //       setTitle("");
+          //       setText("");
+          //       setVisible(false);
+          //     },
+          //   },
+          // ]);
+        });
+      });
+    // } catch (err) {
+    //   console.log("error "+err.message )
+    // }
   };
+  // .then(base64 => {
+  //   console.log(base64)
+  //   console.log("bese64 "+base64.substring(0, 30))
+  //   return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: [base64]}).then(response => {
+  //     // console.log("listImg "+response.data.data);
+  //     // return response.data.data;
+  //     let record = new news();
+  //     record.title = title;
+  //     record.text = text;
+  //     record.created_date = created_date;
+  //     record.created_byId = 1;
+  //     record.url = response.data.data; // Assuming there's only one image
+  //     // const res = await axios.put(`https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/add`,record);
+  //     // Alert.alert(res.data.message, undefined, [
+  //     //   {
+  //     //     text: "Yes",
+  //     //     onPress: () => {
+  //     //       setTitle("");
+  //     //       setText("");
+  //     //       setVisible(false);
+  //     //     },
+  //     //   },
+  //     // ]);
+  //   });
+  // });
   
 
   const sendImg = async () => {
