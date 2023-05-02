@@ -1022,14 +1022,14 @@ const UserProfile = ({ route, navigation }) => {
         ) {
 
           setUser(response.data.data[0]);
-          setContract(contract.data[0]);
-          setVehicle(vehicle.data);
+          setContract(contract.data.data);
+          setVehicle(vehicle.data.data);
 
           // console.log(response.data);
           //console.log(contract.data[0]);
           //console.log(response.data);
           //console.log(vehicle.data);
-          //console.log(contract.data[0]);
+          // console.log(contract.data.data);
 
           return;
         } else {

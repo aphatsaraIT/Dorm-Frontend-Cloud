@@ -62,6 +62,21 @@ const Machine = ({ route, navigation }) => {
     }, [select, url])
   );
   
+  useEffect(() => {
+    if (data != null) {
+      let newUser = [...all];
+      const textData = searchPhrase.toLocaleUpperCase();
+      if (searchPhrase != "") {
+        const newData = newUser.filter(item => {
+          const itemData =  item.name.toLocaleUpperCase();
+          return itemData.indexOf(textData) > -1;
+        });
+        newUser = newData
+      } 
+      setData(newUser);
+    }
+  }, [searchPhrase])
+
   
   useEffect(() => {
     if (data != null) {

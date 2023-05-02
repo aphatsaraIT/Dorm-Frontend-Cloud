@@ -21,7 +21,7 @@ function User({userObject, month, year, user, roomInvoice, rentPrice, meterWater
   
   // console.log(dorm_fee)
   // console.log(common_fee)
-  console.log(roomInvoice)
+  console.log(user)
 
   return (
     <View style={styles.container}>
@@ -52,8 +52,9 @@ const BillInvoice = ({ route, navigation }, props) => {
   const [electricity, setElectricity] = useState(null);
 
   useEffect(() => {
+    console.log(categoryTitle +" "+month+" "+ year)
     const url = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoicebynum/${categoryTitle}`;
-    const urlUser = `${baseUrl}/getUserNum/${categoryTitle}`;
+    const urlUser = `https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/getuserbyroomid/${categoryTitle}`;
     const urlWaterMeter =`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getmeterinvoice/${categoryTitle}/water/${month} ${year}`;
     const urlElecMeter =`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getmeterinvoice/${categoryTitle}/electricity/${month} ${year}`;
     const urlRoomInvoice = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoice-bymonth/${categoryTitle}/${month}/${year}`;
@@ -72,19 +73,22 @@ const BillInvoice = ({ route, navigation }, props) => {
         if (response.status === 200 && resUser.status === 200 && resInvoice.status === 200 && resRentPrice.status === 200 && resWater.status === 200 && resElectric.status === 200) {
           
               setInvoice(response.data.data);
-              setUser(resUser.data);
-              setElectricity(resElectric.data.data);
-              setWater(resWater.data.data);
+              setUser(resUser.data.data[0]);
+              setElectricity(resElectric.data.data[0]);
+              setWater(resWater.data.data[0]);
               setRoomInvoice(resInvoice.data.data);
               setRentPrice(resRentPrice.data.data);
-              console.log(resInvoice.data.data[0])
-              console.log(resRentPrice.data.data)
+              // console.log('test---------------------')
+              // console.log(resElectric.data.data?.length === 0)
+              // console.log('--------------------------')
+              // console.log(resInvoice.data.data)
+              // console.log(resRentPrice.data.data)
 
               // console.log(resRentPrice.data);
               // console.log(resElectric.data);
               // console.log(resWater.data);
 
-          if(resElectric.data === "" || resWater.data === ""){
+          if(resElectric.data.data?.length === 0 || resWater.data.data?.length === 0){
             
                  Alert.alert(  
                   'กรุณากรอกมิเตอร์ของรอบบิล',  

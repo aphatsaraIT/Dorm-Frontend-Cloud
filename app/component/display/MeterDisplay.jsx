@@ -56,6 +56,7 @@ const MeterDisplay = (props) => {
         const res = await axios.get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getbytype/${props.type}`);
         setLists(res.data.data)
         setInfoBySelect(res.data.data)
+        console.log(res.data.data)
       }
       else {
         const res = await axios.get(`https://ept4klpry1.execute-api.us-east-1.amazonaws.com/dev/meter/getbymonthandyear/${listBy}/${props.type}`)

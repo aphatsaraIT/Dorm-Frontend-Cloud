@@ -196,7 +196,7 @@ const ManageInvoice = ({ route, navigation }) => {
               onSelect={() => {
                 if (itemData.item.room_status === "unavailable") {
                   navigation.navigate("BillInvoice", {
-                    id: itemData.item.id,
+                    id: itemData.item.invoice_id,
                     categoryTitle: itemData.item.room_number,
                   });
                 } else {

@@ -11,6 +11,7 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -31,7 +32,6 @@ const MainTenant = ({ route, navigation }) => {
     console.log(itemData);
     return (
       <News
-      numberOfLines={3}
         item={itemData}
         width={"90%"}
         canEdit={false}
@@ -85,7 +85,7 @@ const MainTenant = ({ route, navigation }) => {
         >
           <View
             style={{
-              width: "90%",
+              width: "100%",
               height: "100%",
               borderRadius: "10%",
               padding: 20,
@@ -99,7 +99,7 @@ const MainTenant = ({ route, navigation }) => {
 
             <View
               style={{
-                width: "90%",
+                width: "105%",
                 height: "100%",
                 borderRadius: "10%",
                 flexDirection: "row",
@@ -137,6 +137,17 @@ const MainTenant = ({ route, navigation }) => {
                 >
                   <Ionicons name="megaphone" size={36} color="white" />
                   <Text style={styles.headTxt}>แจ้งเรื่อง</Text>
+                </TouchableOpacity>
+                
+              </View>
+
+              <View style={styles.viewCircle}>
+                <TouchableOpacity
+                  style={styles.circle}
+                  onPress={() => navigation.navigate("Machines")}
+                >
+                  <MaterialCommunityIcons name="washing-machine" size={36} color="white" />
+                  <Text style={styles.headTxt}>ซักผ้า&อบผ้า</Text>
                 </TouchableOpacity>
                 
               </View>
@@ -204,6 +215,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
+    marginRight: 3
   },
   newsContent: {
     width: "100%",
@@ -249,7 +261,7 @@ const styles = StyleSheet.create({
     borderRadius: "50px",
     position: "absolute",
     zIndex: -100,
-    top: -150,
+    top: -160,
   },
   input: {
     height: 60,

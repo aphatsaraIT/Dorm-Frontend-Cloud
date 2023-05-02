@@ -99,7 +99,9 @@ function User({userObject, navigation, userInfo}) {
 
   console.log(nextMonth);
   console.log(currentMonth + " " + currentYear)
+  console.log('userObject[0]')
   console.log(userObject[0])
+
 
   return (
     <View style={styles.container1}>
@@ -154,7 +156,7 @@ const InvioveDetail = ({ route, navigation }) => {
   useFocusEffect(
     useCallback(() => {
     const url = `https://e8ngsalefa.execute-api.us-east-1.amazonaws.com/dev/invoice/getinvoice-bymonth/${categoryTitle}/${month}/${year}`;
-    const urlUser = `${baseUrl}/getUserNum/${categoryTitle}`;
+    const urlUser = `https://xvrf8p1ytd.execute-api.us-east-1.amazonaws.com/dev/user/getuserbyroomid/${categoryTitle}`;
 
     console.log("test");
     const fetchUsers = async () => {
@@ -163,7 +165,7 @@ const InvioveDetail = ({ route, navigation }) => {
         const resUser = await axios.get(urlUser);
         if (response.status === 200 && resUser.status === 200) {
           setInvoice(response.data.data[0]);
-          setUser(resUser.data);
+          setUser(resUser.data.data[0]);
           //console.log(response.data);
           // console.log(resUser.data);
           return;
