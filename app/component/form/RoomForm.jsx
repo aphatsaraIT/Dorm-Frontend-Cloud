@@ -302,7 +302,7 @@ export default function RoomForm({ navigation, route }) {
     
     
     axios
-      .post(`${mingUrl}/room2/add`, all)
+      .post(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/room2/add`, all)
       .then((response) => {
         setVisible(false)
         Alert.alert(response.data, undefined, [
