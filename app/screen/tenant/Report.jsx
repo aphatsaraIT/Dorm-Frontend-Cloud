@@ -9,7 +9,7 @@ import {
   SelectItem,
   Icon
 } from "@ui-kitten/components";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import {
   Alert,
   Dimensions,
@@ -32,6 +32,7 @@ import FooterBackground from "../../component/background/FooterBackground";
 import {baseUrl} from "@env"
 import axios from "axios";
 import AddReport from "../../component/card/AddReport";
+import { useFocusEffect } from "@react-navigation/native";
 let h = Dimensions.get('window').height
 let height;
 if (h > 1000) {
@@ -57,8 +58,10 @@ const Report = () => {
   // const [username, setUsername] = useState("")
   // const [roomNumber,setRoomNumber] = useState("")
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
     const getReport = async () => {
+      setLoading(true)
       const reports = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/getall/`)
       let sortDate = reports.data.data
       sortDate.sort((a, b) => {
@@ -75,10 +78,11 @@ const Report = () => {
         );
       setAllReport(sortDate)
       setListBySelect(sortDate)
+      setLoading(false)
     }
     getReport()
-    
-  }, [])
+  }, []))
+  
   
   useEffect(() => {
     const queryByStatus = async() => {
@@ -159,43 +163,44 @@ const Report = () => {
     
         axios.post(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/add`, createReport).then(res => {
           console.log("add report "+ res.data.message)
+          getReport()
           Alert.alert(res.data.message, undefined, [
           {
             text: "Yes", onPress: () => {
               
               setImage([])
-              setVisible(false);}
+              setVisible(false)
+              setLoading(false);}
           },
         ])
         })
-        
         setLoading(false)
         
       });
 });
-    const getReport = async() => {
-      const reports = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/getall/`)
-      let sortDate = reports.data.data
-      sortDate.sort((a, b) => {
-        function convertDate(text) {
-          const date = text.replace(",", "")
-          const arr = date.split(" ")
-          const arrDate = arr[0].split("/")
-          const arrTime = arr[1].split(":")
-          return new Date(arrDate[2], arrDate[1], arrDate[0], arrTime[0], arrTime[1], arrTime[2])
-        }
-
-        return convertDate(b.date) - convertDate(a.date)
-      }
-        );
-      setAllReport(sortDate)
-      setListBySelect(sortDate)
-    }
+    
     let temp = { ...selectItem }
     temp.row = 0
     setSelectItem(temp)
     setSelectStatus("all")
-    getReport()
+  }
+  const getReport = async() => {
+    const reports = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/getall/`)
+    let sortDate = reports.data.data
+    sortDate.sort((a, b) => {
+      function convertDate(text) {
+        const date = text.replace(",", "")
+        const arr = date.split(" ")
+        const arrDate = arr[0].split("/")
+        const arrTime = arr[1].split(":")
+        return new Date(arrDate[2], arrDate[1], arrDate[0], arrTime[0], arrTime[1], arrTime[2])
+      }
+
+      return convertDate(b.date) - convertDate(a.date)
+    }
+      );
+    setAllReport(sortDate)
+    setListBySelect(sortDate)
   }
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
