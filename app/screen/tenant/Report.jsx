@@ -131,59 +131,48 @@ const Report = () => {
 
   const sendReport = async (content, topic) => {
     setLoading(true)
-    let imageUrl = [];
-    const uploadImage = async () => {
-      let formData = new FormData();
-    for (var i = 0; i < image.length; i++) {
-      // ImagePicker saves the taken photo to disk and returns a local URI to it
-      let localUri = image[i].uri;
-      let filename = localUri.split("/").pop();
-      // Infer the type of the image
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[i]}` : `image`;
-
-
-      formData.append("files", { uri: localUri, name: filename, type });
-    }
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
-    try {
-      const re = await axios.post(
-        `${baseUrl}/file/upload`,
-        formData,
-        config
-      );
-      imageUrl = re.data;
-      
-    } catch (err) {
-      console.log(err);
-      }
-    }
-
-    if (image.length > 0) {
-     await uploadImage()
-    }
-    let createReport = new report();
-    let date = new Date().toLocaleString()
-    createReport.topic = topic
-    createReport.content = content
-    createReport.image = imageUrl
-    createReport.date = date
+    let unexistedImage = image.filter(
+      (img) => img.uri != undefined
+    );
+    Promise.all(unexistedImage.map(img => {
+      return fetch(img.uri).then(response => response.blob())
+        .then(blob => {
+          let reader = new FileReader();
+          reader.readAsDataURL(blob);
+          return new Promise(resolve => {
+            reader.onload = function(event) {
+              // console.log("eve " + event.target.result.substring(0, 20));
+              resolve(event.target.result);
+            }
+          });
+        })
+    })).then(base64 => {
+      console.log("base64 "+base64)
+      return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: base64}).then(response => {
+        console.log("listImg "+response.data.data);
+        let createReport = new report();
+        let date = new Date().toLocaleString()
+        createReport.topic = topic
+        createReport.content = content
+        createReport.image = response.data.data
+        createReport.date = date
     
-    const res = await axios.post(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/add`, createReport)
-    setLoading(false)
-    console.log(res.data.data)
-    Alert.alert(res.data.message, undefined, [
-      {
-        text: "Yes", onPress: () => {
-          
-          setImage([])
-          setVisible(false);}
-      },
-    ])
+        axios.post(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/add`, createReport).then(res => {
+          console.log("add report "+ res.data.message)
+          Alert.alert(res.data.message, undefined, [
+          {
+            text: "Yes", onPress: () => {
+              
+              setImage([])
+              setVisible(false);}
+          },
+        ])
+        })
+        
+        setLoading(false)
+        
+      });
+});
     const getReport = async() => {
       const reports = await axios.get(`https://wkbem4h9ag.execute-api.us-east-1.amazonaws.com/dev/report/getall/`)
       let sortDate = reports.data.data

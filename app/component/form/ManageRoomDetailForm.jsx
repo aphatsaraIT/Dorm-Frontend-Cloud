@@ -21,7 +21,7 @@ const ManageRoomForm = (props) => {
   const [visibleConv, setVisibleConv] = useState(false)
   const [visible, setVisible] = useState(false);
   const [listBuilding, setListBuliding] = useState([])
-  const [loadingAddBuilding,setLoadingAddBuilding] = useState(true)
+  const [loadingAddBuilding,setLoadingAddBuilding] = useState(false)
   const getBuilding =(async ()=>{
     try{
       const res = await axios.get(`https://8osppnevf7.execute-api.us-east-1.amazonaws.com/dev/building/getall`)
@@ -159,8 +159,8 @@ const ManageRoomForm = (props) => {
             value={listBuilding[selectedIndexBuilding.row]?.building_name}
             onSelect={index => {
               setSelectedIndexBuilding(index)
-              console.log("building "+listBuilding[index]?.building_name)
-              props.changeRoomInput(listBuilding[selectedIndexBuilding.row]?.building_name, "build")
+              console.log("building "+listBuilding[index-1]?.building_name)
+              props.changeRoomInput(listBuilding[index-1]?.building_name, "build")
               }}
             style={{ width: 100, marginRight: 10 }}
             
