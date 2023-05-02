@@ -71,17 +71,17 @@ const CreatedPost = () => {
           record.created_date = created_date;
           record.created_byId = 1;
           record.url = response.data.data; // Assuming there's only one image
-          // const res = await axios.put(`https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/add`,record);
-          // Alert.alert(res.data.message, undefined, [
-          //   {
-          //     text: "Yes",
-          //     onPress: () => {
-          //       setTitle("");
-          //       setText("");
-          //       setVisible(false);
-          //     },
-          //   },
-          // ]);
+          const res = axios.put(`https://m4nb34jkya.execute-api.us-east-1.amazonaws.com/dev/news/add`,record);
+          Alert.alert(res.data.data.message, undefined, [
+            {
+              text: "Yes",
+              onPress: () => {
+                setTitle("");
+                setText("");
+                setVisible(false);
+              },
+            },
+          ]);
         });
       });
     // } catch (err) {
