@@ -1,18 +1,32 @@
 import { Image, StyleSheet,  TouchableOpacity, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
-import { Icon, Input,Text, Tooltip } from "@ui-kitten/components";
+import { Icon, Input,Text, Tooltip ,Select, SelectItem, IndexPath} from "@ui-kitten/components";
 import RoomCard from "../card/RoomCard";
 import axios from "axios";
 const ManageRoomForm = (props) => {
   const [image, setImage] = useState([]);
-
+  const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
   useEffect(() => {
     console.log(props)
     setImage(props.allData.image);
+    getBuilding();
+    
   }, []);
   const [visibleConv, setVisibleConv] = useState(false)
   const [visible, setVisible] = useState(false);
+  const [listBuilding, setListBuliding] = useState([])
+  const getBuilding =(async ()=>{
+    try{
+      const res = await axios.get(`https://8osppnevf7.execute-api.us-east-1.amazonaws.com/dev/building/getall`)
+      console.log(res.data.data)
+      setListBuliding(res.data.data)
+
+    }catch(err){
+      console.log(err.message)
+    }
+
+  })
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -100,7 +114,8 @@ const ManageRoomForm = (props) => {
             justifyContent: "center",
           }}
         >
-          <Input
+
+          {/* <Input
             label="ตึก"
             placeholder="ชื่อตึก"
             style={{ width: 80, marginRight: 10 }}
@@ -117,7 +132,27 @@ const ManageRoomForm = (props) => {
             onChangeText={(nextValue) =>
               props.changeRoomInput(nextValue, "floor")
             }
-          />
+          /> */}
+          <Select
+            label="ตึก"
+            selectedIndex={selectedIndex}
+            onSelect={index => setSelectedIndex(index)}
+            style={{ width: 200, marginRight: 10 }}
+          >
+            {listBuilding.map((item,index)=>{
+              return<SelectItem title={item.building_name} />
+            })}
+          </Select>
+          {/* <Select
+            label="ชั้น"
+            selectedIndex={selectedIndex}
+            onSelect={index => setSelectedIndex(index)}
+            style={{ width: 200, marginRight: 10 }}
+          >
+            <SelectItem title='Option 1' />
+            <SelectItem title='Option 2' />
+            <SelectItem title='Option 3' />
+          </Select> */}
           <Input
             label="ห้อง"
             placeholder="Place your Text"

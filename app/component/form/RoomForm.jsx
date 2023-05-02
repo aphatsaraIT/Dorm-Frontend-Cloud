@@ -114,7 +114,6 @@ export default function RoomForm({ navigation, route }) {
   const onStepPress = (position) => {
     setCurrentPage(position);
   };
-
   React.useEffect(() => {
     if (imageUri.length > 0) {
       console.log(imageUri, "thisisimage")
@@ -182,7 +181,7 @@ export default function RoomForm({ navigation, route }) {
     r.room_price = roomOftype.room_price
     r.room_type =  roomOftype.room_type
     let roomNo;
-    console.log("addRent: "+ r)
+    console.log("addRent: "+ roomOftype)
     if (roomOftype.room_number.includes(",")) {
       roomNo = roomOftype.room_number.split(",")
       roomNo.map(async (item) => {
@@ -190,16 +189,14 @@ export default function RoomForm({ navigation, route }) {
           item = "0".concat(item)
         }
         r.room_number = r.build.concat(r.floor, item)
-       const addRent1 = await axios
+      await axios
       .put(`https://adsushvgie.execute-api.us-east-1.amazonaws.com/dev/rent/addrent`, r)
       .then((response) => {
-        console.log("check "+response.data.data)
-        console.log("body "+r)
+        console.log("check "+response.data.data.rent_id)
       })
       .catch((err) => {
         console.log("err "+err);
       });
-        console.log(addRent1)
     })
     }
     else if (roomOftype.room_number.includes("-")) {
@@ -222,74 +219,45 @@ export default function RoomForm({ navigation, route }) {
       .catch((err) => {
         console.log(err);
       });
-       console.log(addRent1);
       }
     }
     addRoomType();
   }
   const uploadFile = async () => {
-    let base64List = [];
-    Promise.all(allData.image.map(image => {
-      return fetch(image.uri).then(response => response.blob())
-      .then(blob => {
-        let reader = new FileReader();
-        reader.readAsDataURL(blob);
-        return new Promise(resolve => {
-          reader.onload = function(event) {
-            console.log("eve " + event.target.result.substring(0, 20));
-            resolve(event.target.result);
-          }
-        });
-      })
-    }))
-    .then(results => {
-      let fd = new FormData();
-      results.forEach(base64String => {
-        console.log(base64String.substring(0,25))
-        fd.append("file", base64String);
-      });
-      // const re = await axios.post(
-      //       // `${mingUrl}/images/upload`,
-      //       'https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/images/upload',
-      //       fd, { headers: {'Content-Type': 'multipart/form-data'}}
-      //     );
-      //     console.log("result" , re.data)
-      return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: results}, { headers: {'Content-Type': 'application/json'}}).then(response => {
-        console.log(response.data)
-      })
-    })
-    Promise.all(allData.image.map(image => {
-      return fetch(image.uri).then(response => response.blob())
-      .then(blob => {
-        let reader = new FileReader();
-        reader.readAsDataURL(blob);
-        return new Promise(resolve => {
-          reader.onload = function(event) {
-            console.log("eve " + event.target.result.substring(0, 20));
-            resolve(event.target.result);
-          }
-        });
-      })
-    }))
-    .then(results => {
-      let fd = new FormData();
-      console.log(results.length)
-      results.forEach(base64String => {
-        console.log(base64String.substring(0,25))
-        fd.append("file", base64String);
-      });
-      return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: results}).then(response => {
-        console.log(response.data.data)
-        setImageUri(response.data.data)
-      })
-      .catch(err => {
-        console.log(err.message )
-      })
-    })
+     let unexistedImage = [...allData.image].filter(
+       (image) => image.uri != undefined
+     );
+     Promise.all(unexistedImage.map(image => {
+       return fetch(image.uri).then(response => response.blob())
+       .then(blob => {
+         let reader = new FileReader();
+         reader.readAsDataURL(blob);
+         return new Promise(resolve => {
+           reader.onload = function(event) {
+             console.log("eve " + event.target.result.substring(0, 20));
+             resolve(event.target.result);
+           }
+         });
+       })
+     }))
+     .then(results => {
+       let fd = new FormData();
+       console.log(results.length)
+       results.forEach(base64String => {
+         console.log(base64String.substring(0,25))
+         fd.append("file", base64String);
+       });
+       return axios.post(`https://ezomcce76h.execute-api.us-east-1.amazonaws.com/dev/images/upload`, {file: results}).then(response => {
+         console.log("listImg "+response.data.data)
+         setImageUri(response.data.data);
+       })
+       .catch(err => {
+         console.log("upload image "+err.message )
+       })
+     })
+ };
 
-    };
-
-  const addRoomType = () => {
+  const addRoomType = async() => {
     let all = new room();
     all.bgColor = allData.bgColor
     all.convenience = allData.convenience
@@ -300,12 +268,13 @@ export default function RoomForm({ navigation, route }) {
     all.suggestion = allData.suggestion
     all.typeName = allData.typeName
     
-    
-    axios
+
+    console.log("check..")
+    await axios
       .post(`https://hmmy4mdej9.execute-api.us-east-1.amazonaws.com/dev/room2/add`, all)
       .then((response) => {
         setVisible(false)
-        Alert.alert(response.data, undefined, [
+        Alert.alert(response.data.message, undefined, [
           {
             text: "OK",
             onPress: () => navigation.goBack(),
