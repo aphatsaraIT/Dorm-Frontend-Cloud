@@ -20,11 +20,12 @@ const CheckRoomsStatus = ({ route, navigation }) => {
   const [user, setUser] = useState(null);
   const [all, setAll] = useState(null);
 
-  const data = ["All", "ชั้นที่ 2", "ชั้นที่ 3"];
+  const data = ["All", "ชั้นที่ 1","ชั้นที่ 2", "ชั้นที่ 3"];
   const [selectedFloor, setSelectedFloor] = React.useState(new IndexPath(0));
   const displayValue = data[selectedFloor.row];
+  console.log('ชั้น '+ displayValue);
 
-  const build = ["ตึก", "ตึกที่ A", "ตึกที่ B", "ตึกที่ E"];
+  const build = ["ตึก", "ตึกที่ A", "ตึกที่ B", "ตึกที่ C","ตึกที่ E", "ตึกที่ Z"];
   const [selectedBuild, setSelectedBuild] = React.useState(new IndexPath(0));
   const displayBuild = build[selectedBuild.row];
 
@@ -38,7 +39,7 @@ const CheckRoomsStatus = ({ route, navigation }) => {
         newUser = newUser.filter((x) => x.build == displayBuild.slice(7, 8));
       }
       if (displayValue != "All") {
-        newUser = newUser.filter((y) => y.floor == displayValue.slice(8, 9));
+        newUser = newUser.filter((y) => {y.floor == parseInt(displayValue.slice(8, 9))});
       }
       setUser(newUser);
     }
